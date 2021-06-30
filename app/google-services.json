@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "942171620166",
+    "project_id": "teams-prototype-b2f32",
+    "storage_bucket": "teams-prototype-b2f32.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:942171620166:android:2eeec6fd553d6a00285b47",
+        "android_client_info": {
+          "package_name": "com.example.teamsprototype"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "942171620166-fta84lh89o5r7n2kppa3ro4fvu7mqud1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5esbV-Bk-eh1WhenawngemQLk0JgCs3c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "942171620166-fta84lh89o5r7n2kppa3ro4fvu7mqud1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
