@@ -30,9 +30,9 @@ public class HostActivity extends AppCompatActivity
     FloatingActionButton share;
     Button meet_now;
     Calendar c = Calendar.getInstance();
-    String room;
-    String token;
+    String room, token;
     FirebaseFirestore db;
+    boolean done;
 
     String randomString(){
         StringBuilder sb = new StringBuilder(10);
@@ -58,17 +58,7 @@ public class HostActivity extends AppCompatActivity
         meet_now = findViewById(R.id.meet_now);
 
         code.setText(room);
-        token = Tokens.createToken(room, 0);
-//        if(Tokens.createToken(room, 0)){
-//            db = FirebaseFirestore.getInstance();
-//            db.collection(AppConstants.TOKENS).document(room).get()
-//                    .addOnSuccessListener(documentSnapshot -> {
-//                        Toast.makeText(getApplicationContext(), "Firebase retrieval success in HOST", Toast.LENGTH_SHORT).show();
-//                    })
-//                    .addOnFailureListener(e -> {
-//                        Toast.makeText(getApplicationContext(), "Firebase retrieval failed", Toast.LENGTH_SHORT).show();
-//                    });
-//        }
+        done = Tokens.createToken(room, 0);
 
         date.setOnClickListener(this);
         time.setOnClickListener(this);
@@ -101,11 +91,21 @@ public class HostActivity extends AppCompatActivity
                 break;
 
             case R.id.meet_now:
-                Intent intent = new Intent(getApplicationContext(), CallActivity.class);
-                intent.putExtra("channelName", room);
-                intent.putExtra("token", token);
-                startActivity(intent);
-                finish();
+                db = FirebaseFirestore.getInstance();
+                db.collection(AppConstants.TOKENS).document(room).get()
+                        .addOnSuccessListener(documentSnapshot -> {
+                            Toast.makeText(getApplicationContext(), "Getting the meeting ready...", Toast.LENGTH_SHORT).show();
+                            token = documentSnapshot.getString("token");
+                            Intent intent = new Intent(getApplicationContext(), CallActivity.class);
+                            intent.putExtra("channelName", room);
+                            intent.putExtra("token", token);
+                            startActivity(intent);
+                            finish();
+                        })
+                        .addOnFailureListener(e -> {
+                            token = null;
+                            Toast.makeText(getApplicationContext(), "Retry...", Toast.LENGTH_SHORT).show();
+                        });
         }
     }
 

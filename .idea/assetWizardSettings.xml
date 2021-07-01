@@ -18,7 +18,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/snap/android-studio/105/android-studio/plugins/android/lib/android.jar!/images/material/icons/materialicons/headset/baseline_headset_24.xml" />
+                                      <entry key="url" value="jar:file:/snap/android-studio/105/android-studio/plugins/android/lib/android.jar!/images/material/icons/materialicons/visibility/baseline_visibility_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -28,7 +28,7 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="speaker_off" />
+                            <entry key="outputName" value="show" />
                             <entry key="sourceFile" value="$USER_HOME$/C:\Users\rashm\AndroidStudioProjects\TeamsPrototype" />
                           </map>
                         </option>

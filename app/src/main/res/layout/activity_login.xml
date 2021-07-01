@@ -58,36 +58,68 @@
             android:textColor="@color/black"
             android:textColorHint="@color/grey" />
 
-        <EditText
-            android:id="@+id/loginPass"
+        <TableRow
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:drawableLeft="@drawable/lock"
-            android:drawablePadding="10dp"
-            android:drawableTint="@color/purple_200"
-            android:ems="10"
-            android:fontFamily="monospace"
-            android:hint="Enter Password"
-            android:inputType="textPassword"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:textColor="@color/black"
-            android:textColorHint="@color/grey" />
+            android:layout_marginRight="20dp">
 
-        <Button
-            android:id="@+id/loginBtn"
+            <EditText
+                android:id="@+id/loginPass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableLeft="@drawable/lock"
+                android:drawablePadding="10dp"
+                android:drawableTint="@color/purple_200"
+                android:ems="10"
+                android:fontFamily="monospace"
+                android:hint="Enter Password"
+                android:inputType="textPassword"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="@color/black"
+                android:textColorHint="@color/grey" />
+
+            <ImageView
+                android:id="@+id/showLogPass"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:cropToPadding="false"
+                android:paddingLeft="10dp"
+                app:srcCompat="@drawable/hide"
+                app:tint="@color/purple_200" />
+
+        </TableRow>
+
+        <TableRow
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="10dp"
-            android:layout_marginRight="20dp"
-            android:background="@drawable/button"
-            android:elevation="20dp"
-            android:fontFamily="monospace"
-            android:text="LOGIN"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:textColor="@color/white" />
+            android:layout_marginRight="20dp">
+
+            <Button
+                android:id="@+id/loginBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button"
+                android:elevation="20dp"
+                android:fontFamily="monospace"
+                android:text="LOGIN"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="@color/white" />
+
+            <ProgressBar
+                style="?android:attr/progressBarStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:indeterminateTint="@color/purple_700"
+                android:progressBackgroundTint="@color/purple_700"
+                android:progressTint="@color/purple_500"
+                android:secondaryProgressTint="@color/purple_200" />
+
+        </TableRow>
 
         <TextView
             android:id="@+id/signUp"

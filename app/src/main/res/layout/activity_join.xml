@@ -7,37 +7,65 @@
     android:background="@color/white"
     tools:context=".activities.JoinActivity">
 
-    <LinearLayout
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:orientation="vertical"
-        android:padding="10dp"
+        android:background="@color/white"
+        app:cardBackgroundColor="@color/purple_500"
+        app:cardElevation="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="20dp">
 
-        <EditText
-            android:id="@+id/joinCode"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:editable="false"
-            android:ems="10"
-            android:fontFamily="monospace"
-            android:hint="Enter Meeting Code"
-            android:inputType="textPersonName"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:textColor="@color/black"
-            android:textColorHint="@color/grey" />
+            android:layout_margin="1dp"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:padding="20dp">
 
-        <Button
-            android:id="@+id/joinBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/button"
-            android:backgroundTint="#4CAF50"
-            android:text="Join Meeting" />
-    </LinearLayout>
+            <EditText
+                android:id="@+id/joinCode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:editable="false"
+                android:ems="10"
+                android:fontFamily="monospace"
+                android:hint="Enter Meeting Code"
+                android:inputType="textPersonName"
+                android:padding="10dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="@color/black"
+                android:textColorHint="@color/grey" />
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/joinBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/button"
+                    android:backgroundTint="#4CAF50"
+                    android:text="Join Meeting" />
+
+                <ProgressBar
+                    android:id="@+id/joining"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:indeterminateTint="#4CAF50"
+                    android:progressBackgroundTint="#4CAF50"
+                    android:progressTint="#4CAF50"
+                    android:secondaryProgressTint="#8BC34A" />
+
+            </TableRow>
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

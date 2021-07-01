@@ -50,16 +50,12 @@ dependencies {
 //    Firebase
     implementation 'com.google.firebase:firebase-auth:21.0.1'
     implementation 'com.google.firebase:firebase-firestore:23.0.1'
-    implementation 'com.google.firebase:firebase-messaging:22.0.0'
     implementation platform('com.google.firebase:firebase-bom:28.1.0')
     implementation 'com.google.firebase:firebase-analytics'
 
 //    Agora
     implementation group: 'io.agora.rtc', name: 'full-sdk', version: '3.3.0'
 
+//    okHTTP
     implementation "com.squareup.okhttp3:okhttp:4.9.0"
-
-//    Retrofit
-    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
 }

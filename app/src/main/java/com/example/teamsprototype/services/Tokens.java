@@ -14,7 +14,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.concurrent.CountDownLatch;
 
 import static android.content.ContentValues.TAG;
 
@@ -22,7 +21,7 @@ public class Tokens{
     static boolean success = false;
     static String token = null;
 
-    public static String createToken(String channelName, int uid) {
+    public static boolean createToken(String channelName, int uid) {
         String url = "https://agoratokens.azurewebsites.net/access_token?channelName=" + channelName + "&uid=" + uid;
 
         OkHttpClient client = new OkHttpClient();
@@ -30,13 +29,10 @@ public class Tokens{
                 .url(url)
                 .build();
 
-        CountDownLatch countDownLatch = new CountDownLatch(1);
-
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
                 e.printStackTrace();
-                countDownLatch.countDown();
             }
 
             @Override
@@ -57,7 +53,6 @@ public class Tokens{
                                 .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
                                 .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
                         success = true;
-                        countDownLatch.countDown();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -65,11 +60,6 @@ public class Tokens{
             }
         });
 
-        try {
-            countDownLatch.await();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return token;
+        return success;
     }
 }

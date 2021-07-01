@@ -2,9 +2,13 @@ package com.example.teamsprototype.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,7 +27,10 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
     EditText username, emailTxt, passwordTxt, confirmPass;
     Button signUp;
     TextView login;
+    ImageView showPass, showConPass;
     private Preferences preferences;
+    boolean show_pass=false;
+    boolean show_con_pass=false;
 
     String name, email, password, con_pass;
 
@@ -38,6 +45,8 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         emailTxt = findViewById(R.id.signupEmail);
         passwordTxt = findViewById(R.id.signupPass);
         confirmPass = findViewById(R.id.confirmPass);
+        showPass = findViewById(R.id.showPass);
+        showConPass = findViewById(R.id.showConPass);
 
         signUp = findViewById(R.id.signupBtn);
         login = findViewById(R.id.login);
@@ -46,6 +55,8 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
 
         signUp.setOnClickListener(this);
         login.setOnClickListener(this);
+        showPass.setOnClickListener(this);
+        showConPass.setOnClickListener(this);
     }
 
     @Override
@@ -57,24 +68,16 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                 password = passwordTxt.getText().toString();
                 con_pass = confirmPass.getText().toString();
 
-                if(name.trim().isEmpty() || email.trim().isEmpty() || password.trim().isEmpty() || con_pass.trim().isEmpty()) {
-                    Toast.makeText(SignupActivity.this, "All fields required", Toast.LENGTH_SHORT).show();
-                }
-                else{
-                    if(password.equals(con_pass)){
-                        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
-                            if(task.isSuccessful()){
-                                signUp();
-                                startActivity(new Intent(SignupActivity.this, DashboardActivity.class));
-                                finish();
-                            }else{
-                                Toast.makeText(SignupActivity.this, "SignUp Unsuccessful", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                    else{
-                        Toast.makeText(SignupActivity.this, "Passwords don't match", Toast.LENGTH_SHORT).show();
-                    }
+                if(validateName(name) && validateEmail(email) && validatePassword(password, con_pass)){
+                    signUp.setVisibility(View.GONE);
+                    auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
+                        if(task.isSuccessful()){
+                            signUp();
+                        }else{
+                            signUp.setVisibility(View.VISIBLE);
+                            Toast.makeText(SignupActivity.this, "Signup Unsuccessful", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
                 break;
 
@@ -82,7 +85,67 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                 startActivity(new Intent(SignupActivity.this, LoginActivity.class));
                 finish();
                 break;
+
+            case R.id.showPass:
+                show_pass = !show_pass;
+                if(show_pass){
+                    passwordTxt.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                    showPass.setImageResource(R.drawable.hide);
+                } else {
+                    passwordTxt.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                    showPass.setImageResource(R.drawable.show);
+                }
+                break;
+
+            case R.id.showConPass:
+                show_con_pass = !show_con_pass;
+                if(show_con_pass) {
+                    confirmPass.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                    showConPass.setImageResource(R.drawable.show);
+                } else {
+                    confirmPass.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                    showConPass.setImageResource(R.drawable.hide);
+                }
+                break;
         }
+    }
+
+    private boolean validateName(String name){
+        boolean success = false;
+        if(name.trim().isEmpty()){
+            username.setError("Field can't be empty");
+        } else {
+            success = true;
+        }
+        return success;
+    }
+
+    private boolean validateEmail(String email){
+        boolean success = false;
+        if(email.trim().isEmpty()){
+            emailTxt.setError("Field can't be empty");
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+            emailTxt.setError("Enter valid email");
+        } else {
+            success = true;
+        }
+        return success;
+    }
+
+    private boolean validatePassword(String password, String con_pass){
+        boolean success = false;
+        if(password.trim().isEmpty()){
+            passwordTxt.setError("Field can't be empty");
+        } else if (con_pass.trim().isEmpty()){
+            confirmPass.setError("Field can't be empty");
+        } else if (password.length()< 6 ){
+            passwordTxt.setError("Password must be at least 6 characters");
+        } else if(!password.equals(con_pass)){
+            confirmPass.setError("Passwords don't match");
+        } else {
+            success = true;
+        }
+        return success;
     }
 
     private void signUp() {
@@ -92,18 +155,16 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         user.put(AppConstants.EMAIL, email);
         user.put(AppConstants.PASSWORD, password);
 
-        db.collection(AppConstants.KEY_COLLECTION)
-                .add(user)
+        db.collection(AppConstants.KEY_COLLECTION).document(email).set(user)
                 .addOnSuccessListener(documentReference -> {
                     preferences.putBoolean(AppConstants.SIGNED_IN, true);
-                    preferences.putString(AppConstants.USER_ID, documentReference.getId());
                     preferences.putString(AppConstants.NAME, name);
                     preferences.putString(AppConstants.EMAIL, email);
                     preferences.putString(AppConstants.PASSWORD, password);
-                    preferences.putString(AppConstants.USER_ID, documentReference.toString());
                     Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
+                    finish();
                 })
                 .addOnFailureListener(e -> Toast.makeText(SignupActivity.this, "Error: "+e.getMessage(), Toast.LENGTH_SHORT).show());
     }

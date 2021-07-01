@@ -6,22 +6,18 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.example.teamsprototype.R;
-import com.example.teamsprototype.services.Tokens;
-import com.example.teamsprototype.utilities.AppConstants;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicReference;
 
 import io.agora.rtc.Constants;
 import io.agora.rtc.IRtcEngineEventHandler;
@@ -34,14 +30,14 @@ public class CallActivity extends AppCompatActivity implements View.OnClickListe
     private RtcEngine mRtcEngine;
     FrameLayout localContainer;
     RelativeLayout remoteContainer;
+    ImageView localUser;
     SurfaceView localView, remoteView;
-    FloatingActionButton mute_btn, video_btn, end_call_btn, switchCam_btn, speaker_btn;
+    FloatingActionButton mute_btn, video_btn, end_call_btn, switchCam_btn;
     String channelName, token;
 
-    boolean mute = false;
+    boolean mute = true;
     boolean cam = false;
     boolean end_call = false;
-    boolean speaker = true;
 
     private final IRtcEngineEventHandler mRtcHandler = new IRtcEngineEventHandler() {
         @Override
@@ -50,10 +46,22 @@ public class CallActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         @Override
+        public void onRejoinChannelSuccess(String channel, final int uid, int elapsed){
+            super.onRejoinChannelSuccess(channel, uid, elapsed);
+        }
+
+        @Override
+        public void onUserJoined(final int uid, int elapsed){
+            super.onUserJoined(uid, elapsed);
+            runOnUiThread(() -> remoteUserJoined());
+        }
+
+        @Override
         public void onUserOffline(final int uid, int reason) {
             super.onUserOffline(uid, reason);
             runOnUiThread(() -> {
                 removeRemoteVideo();
+                remoteUserLeft();
             });
         }
 
@@ -106,15 +114,14 @@ public class CallActivity extends AppCompatActivity implements View.OnClickListe
         switchCam_btn = findViewById(R.id.switchCam);
         mute_btn = findViewById(R.id.mic);
         video_btn = findViewById(R.id.video);
-        speaker_btn = findViewById(R.id.speaker);
         localContainer = findViewById(R.id.localVideo);
+        localUser = findViewById(R.id.local_user);
         remoteContainer = findViewById(R.id.remoteVideo);
 
         end_call_btn.setOnClickListener(this);
         switchCam_btn.setOnClickListener(this);
         mute_btn.setOnClickListener(this);
         video_btn.setOnClickListener(this);
-        speaker_btn.setOnClickListener(this);
 
         getAllPermissions();
         initializeRtcEngine();
@@ -141,28 +148,7 @@ public class CallActivity extends AppCompatActivity implements View.OnClickListe
         mRtcEngine.setDefaultAudioRoutetoSpeakerphone(true);
     }
 
-    private synchronized String getToken(String channelName){
-        CountDownLatch countDownLatch = new CountDownLatch(1);
-        AtomicReference<String> token_from_firebase = new AtomicReference<>();
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection(AppConstants.TOKENS).document(channelName).get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    token_from_firebase.set(documentSnapshot.getString("token"));
-                    })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(getApplicationContext(), "Firebase Error", Toast.LENGTH_SHORT).show();
-                });
-        countDownLatch.countDown();
-        try {
-            countDownLatch.await();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return token_from_firebase.get();
-    }
-
     private void joinChannel() {
-        Toast.makeText(getApplicationContext(), "Token from Call:" + channelName +" = "+token, Toast.LENGTH_LONG).show();
         mRtcEngine.enableVideo();
         mRtcEngine.enableLocalVideo(false);
         mRtcEngine.enableLocalAudio(false);
@@ -173,15 +159,6 @@ public class CallActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch(v.getId()){
-            case R.id.speaker:
-                speaker = !speaker;
-                if(speaker){
-                    speaker_btn.setImageResource(R.drawable.speaker_on);
-                } else {
-                    speaker_btn.setImageResource(R.drawable.speaker_off);
-                }
-                mRtcEngine.setEnableSpeakerphone(speaker);
-                break;
 
             case R.id.mic:
                 mute = !mute;
@@ -216,6 +193,34 @@ public class CallActivity extends AppCompatActivity implements View.OnClickListe
                 endCall();
                 break;
         }
+    }
+
+    private void remoteUserJoined() {
+        final float scale = getApplicationContext().getResources().getDisplayMetrics().density;
+        ViewGroup.LayoutParams params = localContainer.getLayoutParams();
+        params.height = (int) (150 * scale + 0.5f);
+        params.width = (int) (150 * scale + 0.5f);
+        localContainer.setLayoutParams(params);
+        localContainer.requestLayout();
+        params = localUser.getLayoutParams();
+        params.height = (int) (50 * scale + 0.5f);
+        params.width = (int) (50 * scale + 0.5f);
+        localUser.setLayoutParams(params);
+        localUser.requestLayout();
+    }
+
+    private void remoteUserLeft(){
+        final float scale = getApplicationContext().getResources().getDisplayMetrics().density;
+        ViewGroup.LayoutParams params = localContainer.getLayoutParams();
+        params.height = ViewGroup.LayoutParams.MATCH_PARENT;
+        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        localContainer.setLayoutParams(params);
+        localContainer.requestLayout();
+        params = localUser.getLayoutParams();
+        params.height = (int) (70 * scale + 0.5f);
+        params.width = (int) (70 * scale + 0.5f);
+        localUser.setLayoutParams(params);
+        localUser.requestLayout();
     }
 
     private void setupLocalVideo() {

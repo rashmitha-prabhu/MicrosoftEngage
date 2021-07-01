@@ -25,15 +25,15 @@
             android:background="@drawable/users"
             android:cropToPadding="false"
             android:padding="5dp"
-            android:tint="@color/white"
+            app:tint="@color/white"
             app:srcCompat="@drawable/user" />
 
     </RelativeLayout>
 
     <FrameLayout
         android:id="@+id/localVideo"
-        android:layout_width="125dp"
-        android:layout_height="125dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="0dp"
@@ -41,15 +41,15 @@
         android:background="#212525">
 
         <ImageView
-            android:id="@+id/imageView5"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:id="@+id/local_user"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:layout_gravity="center"
             android:background="@drawable/users"
             android:backgroundTint="@color/purple_200"
             android:padding="5dp"
-            android:tint="@color/white"
-            app:srcCompat="@drawable/user" />
+            app:srcCompat="@drawable/user"
+            app:tint="@color/white" />
 
     </FrameLayout>
 
@@ -63,23 +63,6 @@
         android:orientation="vertical"
         android:paddingTop="10dp"
         android:paddingBottom="10dp">
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/speaker"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="5dp"
-            android:backgroundTint="@color/transparent"
-            android:clickable="true"
-            android:contentDescription="Speaker Mode"
-            android:elevation="15dp"
-            android:tint="@color/white"
-            app:backgroundTint="@color/purple_700"
-            app:fabSize="mini"
-            app:srcCompat="@drawable/speaker_on" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/mic"

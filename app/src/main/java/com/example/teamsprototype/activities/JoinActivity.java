@@ -2,30 +2,18 @@ package com.example.teamsprototype.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.teamsprototype.R;
-import com.example.teamsprototype.services.Tokens;
 import com.example.teamsprototype.utilities.AppConstants;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
 
 public class JoinActivity extends AppCompatActivity implements View.OnClickListener {
     EditText code;
@@ -52,6 +40,7 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
             if (room.trim().isEmpty()) {
                 Toast.makeText(getApplicationContext(), "Enter room code", Toast.LENGTH_SHORT).show();
             } else {
+                join.setVisibility(View.GONE);
                 db.document(room).get()
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
@@ -62,13 +51,15 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
                                     intent.putExtra("channelName", room);
                                     intent.putExtra("token", token);
                                     JoinActivity.this.startActivity(intent);
+                                    finish();
                                 } else {
-                                    Log.d("Token", "Unsuccessful");
                                     token = null;
+                                    join.setVisibility(View.VISIBLE);
                                     Toast.makeText(JoinActivity.this.getApplicationContext(), "Room doesn't exist. Host meeting", Toast.LENGTH_SHORT).show();
                                 }
                             } else {
-                                Toast.makeText(JoinActivity.this.getApplicationContext(), "Fetch token failed. Retry", Toast.LENGTH_SHORT).show();
+                                join.setVisibility(View.VISIBLE);
+                                Toast.makeText(JoinActivity.this.getApplicationContext(), "Retry...", Toast.LENGTH_SHORT).show();
                             }
                         });
             }

@@ -2,9 +2,12 @@ package com.example.teamsprototype.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,7 +21,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 
-
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
     FirebaseAuth auth;
     EditText emailTxt, passwordTxt;
@@ -26,6 +28,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     TextView signUp;
     Preferences preferences;
     String email, password;
+    ImageView showPass;
+    boolean show = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,15 +44,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             finish();
         }
 
+        auth = FirebaseAuth.getInstance();
         emailTxt = findViewById(R.id.loginEmail);
         passwordTxt = findViewById(R.id.loginPass);
         login = findViewById(R.id.loginBtn);
         signUp = findViewById(R.id.signUp);
-        auth = FirebaseAuth.getInstance();
+        showPass = findViewById(R.id.showLogPass);
 
         login.setOnClickListener(this);
         signUp.setOnClickListener(this);
-
+        showPass.setOnClickListener(this);
     }
 
     @Override
@@ -57,15 +62,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             case R.id.loginBtn:
                 email = emailTxt.getText().toString();
                 password = passwordTxt.getText().toString();
-                if(email.trim().isEmpty() || password.trim().isEmpty()){
-                    Toast.makeText(LoginActivity.this, "All fields required", Toast.LENGTH_SHORT).show();
+                if(email.trim().isEmpty()){
+                    emailTxt.setError("Field can't be empty");
+                } else if (password.trim().isEmpty()){
+                    passwordTxt.setError("Field can't be empty");
                 }
                 else{
+                    login.setVisibility(View.GONE);
                     auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
                         if(task.isSuccessful()){
                             login();
                         } else {
                             Toast.makeText(LoginActivity.this, task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                            login.setVisibility(View.VISIBLE);
                         }
                     });
                 }
@@ -76,6 +85,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 startActivity(intent);
                 finish();
                 break;
+
+            case R.id.showLogPass:
+                show = !show;
+                if(show){
+                    passwordTxt.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                    showPass.setImageResource(R.drawable.show);
+                } else {
+                    passwordTxt.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                    showPass.setImageResource(R.drawable.hide);
+                }
         }
     }
 
@@ -92,7 +111,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         preferences.putString(AppConstants.USER_ID, documentSnapshot.getId());
                         preferences.putString(AppConstants.NAME, documentSnapshot.getString(AppConstants.NAME));
                         preferences.putString(AppConstants.EMAIL, documentSnapshot.getString(AppConstants.EMAIL));
-                        Toast.makeText(LoginActivity.this, "Logged In", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
