@@ -38,7 +38,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="0dp"
         android:layout_marginBottom="0dp"
-        android:background="@drawable/local_background">
+        android:background="@color/local_bg">
 
         <ImageView
             android:id="@+id/local_user"
