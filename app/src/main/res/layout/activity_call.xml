@@ -11,7 +11,7 @@
         android:id="@+id/remoteVideo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#1B1818"
+        android:background="@drawable/remote_background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -25,8 +25,8 @@
             android:background="@drawable/users"
             android:cropToPadding="false"
             android:padding="5dp"
-            app:tint="@color/white"
-            app:srcCompat="@drawable/user" />
+            app:srcCompat="@drawable/user"
+            app:tint="@color/white" />
 
     </RelativeLayout>
 
@@ -38,7 +38,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="0dp"
         android:layout_marginBottom="0dp"
-        android:background="#212525">
+        android:background="@drawable/local_background">
 
         <ImageView
             android:id="@+id/local_user"
