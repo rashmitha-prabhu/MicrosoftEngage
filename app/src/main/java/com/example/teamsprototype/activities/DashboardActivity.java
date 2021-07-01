@@ -23,7 +23,6 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     TextView greet;
     Preferences preferences;
     String msg;
-    ProgressBar progressBar;
     boolean doubleBackToExitPressedOnce = false;
 
     @Override
@@ -56,7 +55,6 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         host = findViewById(R.id.hostMeet);
         greet = findViewById(R.id.greet);
         signOut = findViewById(R.id.logout);
-        progressBar = findViewById(R.id.signOut);
 
         msg = "Hello, " + preferences.getString(AppConstants.NAME);
         greet.setText(msg);
@@ -72,11 +70,11 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             case R.id.joinMeet:
                 startActivity(new Intent(DashboardActivity.this, JoinActivity.class));
                 break;
+
             case R.id.hostMeet:
                 startActivity(new Intent(DashboardActivity.this, HostActivity.class));
                 break;
             case R.id.logout:
-                signOut.setVisibility(View.VISIBLE);
                 signOut();
                 break;
         }
