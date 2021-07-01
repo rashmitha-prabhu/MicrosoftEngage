@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -153,6 +154,7 @@ public class CallActivity extends AppCompatActivity implements View.OnClickListe
         mRtcEngine.enableLocalVideo(false);
         mRtcEngine.enableLocalAudio(false);
         mRtcEngine.muteLocalAudioStream(true);
+        mRtcEngine.enableDualStreamMode(true);
         mRtcEngine.joinChannel(token, channelName, "", 0);
     }
 
@@ -242,17 +244,6 @@ public class CallActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void setupRemoteVideo(int uid) {
-        int count = remoteContainer.getChildCount();
-        View view = null;
-        for(int i=0; i<count; i++){
-            View v = remoteContainer.getChildAt(i);
-            if(v.getTag() instanceof Integer && ((int) v.getTag())==uid){
-                view = v;
-            }
-        }
-        if(view != null){
-            return;
-        }
         remoteView = RtcEngine.CreateRendererView(getBaseContext());
         remoteContainer.addView(remoteView);
         mRtcEngine.setupRemoteVideo(new VideoCanvas(remoteView, VideoCanvas.RENDER_MODE_HIDDEN, uid));
