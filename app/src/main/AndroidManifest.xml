@@ -19,6 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TeamsPrototype"
         android:usesCleartextTraffic="true">
+        <activity android:name=".activities.CalendarActivity" />
 
         <uses-library
             android:name="org.apache.http.legacy"

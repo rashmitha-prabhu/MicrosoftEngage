@@ -1,9 +1,12 @@
 package com.example.teamsprototype.activities;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -24,11 +27,11 @@ import java.util.Calendar;
 
 
 public class HostActivity extends AppCompatActivity
-        implements View.OnClickListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+        implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
     EditText agenda, time, date;
     TextView code;
     FloatingActionButton share;
-    Button meet_now;
+    Button meet_now, schedule_meet;
     Calendar c = Calendar.getInstance();
     String room, token;
     FirebaseFirestore db;
@@ -44,6 +47,7 @@ public class HostActivity extends AppCompatActivity
         return sb.toString();
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,41 +60,42 @@ public class HostActivity extends AppCompatActivity
         code = findViewById(R.id.code);
         share = findViewById(R.id.share);
         meet_now = findViewById(R.id.meet_now);
+        schedule_meet = findViewById(R.id.meet_later);
 
         code.setText(room);
-        done = Tokens.createToken(room, 0);
 
-        date.setOnClickListener(this);
-        time.setOnClickListener(this);
-        share.setOnClickListener(this);
-        meet_now.setOnClickListener(this);
-    }
+        date.setInputType(InputType.TYPE_NULL);
+        time.setInputType(InputType.TYPE_NULL);
 
-    @Override
-    public void onClick(View v) {
-        switch(v.getId()){
-            case R.id.date:
-                showDatePicker();
-                break;
+        date.setOnTouchListener((v, event) -> {
+            if(event.getAction() == MotionEvent.ACTION_DOWN)
+                    showDatePicker();
+            return false;
+        });
 
-            case R.id.time:
+        time.setOnTouchListener((v, event) -> {
+            if(event.getAction() == MotionEvent.ACTION_DOWN)
                 showTimePicker();
-                break;
+            return false;
+        });
 
-            case R.id.share:
-                String msg = "Join the Teams Meeting using code: " + code.getText().toString()
-                        + "\nAgenda: " +  agenda.getText().toString()
-                        + "\nDate: " + date.getText().toString()
-                        + "\nTime: " + time.getText().toString();
-                Intent send = new Intent();
-                send.setAction(Intent.ACTION_SEND);
-                send.putExtra(Intent.EXTRA_TEXT, msg);
-                send.setType("text/plain");
-                Intent shareIntent = Intent.createChooser(send, "Teams Meeting");
-                startActivity(shareIntent);
-                break;
+        share.setOnClickListener(v -> {
+            String msg = "Join the Teams Meeting using code: " + code.getText().toString()
+                    + "\nAgenda: " +  agenda.getText().toString()
+                    + "\nDate: " + date.getText().toString()
+                    + "\nTime: " + time.getText().toString();
+            Intent send = new Intent();
+            send.setAction(Intent.ACTION_SEND);
+            send.putExtra(Intent.EXTRA_TEXT, msg);
+            send.setType("text/plain");
+            Intent shareIntent = Intent.createChooser(send, "Teams Meeting");
+            startActivity(shareIntent);
+        });
 
-            case R.id.meet_now:
+        meet_now.setOnClickListener(v -> {
+            meet_now.setVisibility(View.GONE);
+            done = Tokens.createToken(room, 0);
+            if(done){
                 db = FirebaseFirestore.getInstance();
                 db.collection(AppConstants.TOKENS).document(room).get()
                         .addOnSuccessListener(documentSnapshot -> {
@@ -104,9 +109,29 @@ public class HostActivity extends AppCompatActivity
                         })
                         .addOnFailureListener(e -> {
                             token = null;
+                            meet_now.setVisibility(View.VISIBLE);
                             Toast.makeText(getApplicationContext(), "Retry...", Toast.LENGTH_SHORT).show();
                         });
-        }
+            } else {
+                Toast.makeText(getApplicationContext(), "Error in creating room. Retry", Toast.LENGTH_SHORT).show();
+            }
+
+        });
+
+        schedule_meet.setOnClickListener(v -> {
+            if(date.getText().toString().isEmpty()){
+                date.setError("Field can't be empty");
+            } else {
+                schedule_meet.setVisibility(View.GONE);
+                Intent intent = new Intent(getApplicationContext(), CalendarActivity.class);
+                intent.putExtra("agenda", agenda.getText().toString());
+                intent.putExtra("date", date.getText().toString());
+                intent.putExtra("time", time.getText().toString());
+                intent.putExtra("code", code.getText().toString());
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 
     private void showTimePicker() {

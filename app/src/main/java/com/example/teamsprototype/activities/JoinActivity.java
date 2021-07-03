@@ -15,7 +15,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-public class JoinActivity extends AppCompatActivity implements View.OnClickListener {
+public class JoinActivity extends AppCompatActivity {
     EditText code;
     Button join;
     static String token, room;
@@ -30,12 +30,7 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
         code = findViewById(R.id.joinCode);
         join = findViewById(R.id.joinBtn);
 
-        join.setOnClickListener(this);
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.joinBtn) {
+        join.setOnClickListener(v -> {
             room = code.getText().toString();
             if (room.trim().isEmpty()) {
                 Toast.makeText(getApplicationContext(), "Enter room code", Toast.LENGTH_SHORT).show();
@@ -45,6 +40,7 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
                                 DocumentSnapshot doc = task.getResult();
+                                assert doc != null;
                                 if (doc.exists()) {
                                     token = doc.getString("token");
                                     Intent intent = new Intent(JoinActivity.this.getApplicationContext(), CallActivity.class);
@@ -55,7 +51,7 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
                                 } else {
                                     token = null;
                                     join.setVisibility(View.VISIBLE);
-                                    Toast.makeText(JoinActivity.this.getApplicationContext(), "Room doesn't exist. Host meeting", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(JoinActivity.this.getApplicationContext(), "Room doesn't exist...", Toast.LENGTH_SHORT).show();
                                 }
                             } else {
                                 join.setVisibility(View.VISIBLE);
@@ -63,7 +59,6 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
                             }
                         });
             }
-
-        }
+        });
     }
 }

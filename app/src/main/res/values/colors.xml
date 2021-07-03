@@ -11,4 +11,5 @@
     <color name="transparent">#41000000</color>
     <color name="remote_bg">#1B1818</color>
     <color name="local_bg">#212525</color>
+    <color name="red">#FFF42E20</color>
 </resources>

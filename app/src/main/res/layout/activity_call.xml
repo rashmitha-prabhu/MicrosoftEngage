@@ -22,10 +22,10 @@
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:layout_centerInParent="true"
-            android:background="@drawable/users"
+            android:background="@drawable/round_btn"
             android:cropToPadding="false"
             android:padding="5dp"
-            app:srcCompat="@drawable/user"
+            app:srcCompat="@drawable/person"
             app:tint="@color/white" />
 
     </RelativeLayout>
@@ -45,10 +45,10 @@
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:layout_gravity="center"
-            android:background="@drawable/users"
+            android:background="@drawable/round_btn"
             android:backgroundTint="@color/purple_200"
             android:padding="5dp"
-            app:srcCompat="@drawable/user"
+            app:srcCompat="@drawable/person"
             app:tint="@color/white" />
 
     </FrameLayout>

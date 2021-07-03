@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +25,7 @@ import io.agora.rtc.RtcEngine;
 import io.agora.rtc.video.VideoCanvas;
 import io.agora.rtc.video.VideoEncoderConfiguration;
 
-public class CallActivity extends AppCompatActivity implements View.OnClickListener{
+public class CallActivity extends AppCompatActivity{
 
     private RtcEngine mRtcEngine;
     FrameLayout localContainer;
@@ -119,10 +118,10 @@ public class CallActivity extends AppCompatActivity implements View.OnClickListe
         localUser = findViewById(R.id.local_user);
         remoteContainer = findViewById(R.id.remoteVideo);
 
-        end_call_btn.setOnClickListener(this);
-        switchCam_btn.setOnClickListener(this);
-        mute_btn.setOnClickListener(this);
-        video_btn.setOnClickListener(this);
+        mute_btn.setOnClickListener(v -> audio_toggle());
+        video_btn.setOnClickListener(v -> video_toggle());
+        switchCam_btn.setOnClickListener(v -> mRtcEngine.switchCamera());
+        end_call_btn.setOnClickListener(v -> endCall());
 
         getAllPermissions();
         initializeRtcEngine();
@@ -154,47 +153,31 @@ public class CallActivity extends AppCompatActivity implements View.OnClickListe
         mRtcEngine.enableLocalVideo(false);
         mRtcEngine.enableLocalAudio(false);
         mRtcEngine.muteLocalAudioStream(true);
-        mRtcEngine.enableDualStreamMode(true);
         mRtcEngine.joinChannel(token, channelName, "", 0);
     }
 
-    @Override
-    public void onClick(View v) {
-        switch(v.getId()){
-
-            case R.id.mic:
-                mute = !mute;
-                if(mute){
-                    mute_btn.setImageResource(R.drawable.mic_off);
-                    mRtcEngine.enableLocalAudio(false);
-                } else {
-                    mute_btn.setImageResource(R.drawable.mic_on);
-                    mRtcEngine.enableLocalAudio(true);
-                }
-                mRtcEngine.muteLocalAudioStream(mute);
-                break;
-
-            case R.id.video:
-                cam = !cam;
-                if(cam){
-                    setupLocalVideo();
-                    video_btn.setImageResource(R.drawable.video_on);
-                }else{
-                    removeLocalVideo();
-                    video_btn.setImageResource(R.drawable.video_off);
-                }
-                mRtcEngine.muteLocalVideoStream(!cam);
-                break;
-
-            case R.id.switchCam:
-                mRtcEngine.switchCamera();
-                break;
-
-            case R.id.hangUp:
-                end_call = !end_call;
-                endCall();
-                break;
+    private void audio_toggle() {
+        mute = !mute;
+        if(mute){
+            mute_btn.setImageResource(R.drawable.mic_off);
+            mRtcEngine.enableLocalAudio(false);
+        } else {
+            mute_btn.setImageResource(R.drawable.mic_on);
+            mRtcEngine.enableLocalAudio(true);
         }
+        mRtcEngine.muteLocalAudioStream(mute);
+    }
+
+    private void video_toggle() {
+        cam = !cam;
+        if(cam){
+            setupLocalVideo();
+            video_btn.setImageResource(R.drawable.video_on);
+        }else{
+            removeLocalVideo();
+            video_btn.setImageResource(R.drawable.video_off);
+        }
+        mRtcEngine.muteLocalVideoStream(!cam);
     }
 
     private void remoteUserJoined() {
@@ -244,6 +227,17 @@ public class CallActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void setupRemoteVideo(int uid) {
+        int count = remoteContainer.getChildCount();
+        View view = null;
+        for(int i=0; i<count; i++){
+            View v = remoteContainer.getChildAt(i);
+            if(v.getTag() instanceof Integer && ((int) v.getTag())==uid){
+                view = v;
+            }
+        }
+        if(view != null){
+            return;
+        }
         remoteView = RtcEngine.CreateRendererView(getBaseContext());
         remoteContainer.addView(remoteView);
         mRtcEngine.setupRemoteVideo(new VideoCanvas(remoteView, VideoCanvas.RENDER_MODE_HIDDEN, uid));
@@ -259,6 +253,7 @@ public class CallActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void endCall() {
+        end_call = !end_call;
         removeLocalVideo();
         removeRemoteVideo();
         leaveChannel();

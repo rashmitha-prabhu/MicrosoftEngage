@@ -2,10 +2,7 @@ package com.example.teamsprototype.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.view.View;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,9 +13,12 @@ import com.example.teamsprototype.utilities.AppConstants;
 import com.example.teamsprototype.utilities.Preferences;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class DashboardActivity extends AppCompatActivity implements View.OnClickListener {
+import java.util.Timer;
+import java.util.TimerTask;
 
-    Button join, host;
+public class DashboardActivity extends AppCompatActivity{
+
+    Button join, host, schedule;
     FloatingActionButton signOut;
     TextView greet;
     Preferences preferences;
@@ -35,8 +35,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         this.doubleBackToExitPressedOnce = true;
         Toast.makeText(this, "Click BACK again to exit", Toast.LENGTH_SHORT).show();
 
-        new Handler().postDelayed(new Runnable() {
-
+        new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
                 doubleBackToExitPressedOnce=false;
@@ -55,34 +54,19 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         host = findViewById(R.id.hostMeet);
         greet = findViewById(R.id.greet);
         signOut = findViewById(R.id.logout);
+        schedule = findViewById(R.id.view_sched);
 
         msg = "Hello, " + preferences.getString(AppConstants.NAME);
         greet.setText(msg);
 
-        join.setOnClickListener(this);
-        host.setOnClickListener(this);
-        signOut.setOnClickListener(this);
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch(v.getId()){
-            case R.id.joinMeet:
-                startActivity(new Intent(DashboardActivity.this, JoinActivity.class));
-                break;
-
-            case R.id.hostMeet:
-                startActivity(new Intent(DashboardActivity.this, HostActivity.class));
-                break;
-            case R.id.logout:
-                signOut();
-                break;
-        }
-    }
-
-    private void signOut(){
+        join.setOnClickListener(v -> startActivity(new Intent(DashboardActivity.this, JoinActivity.class)));
+        host.setOnClickListener(v -> startActivity(new Intent(DashboardActivity.this, HostActivity.class)));
+        schedule.setOnClickListener(v -> startActivity(new Intent(DashboardActivity.this, CalendarActivity.class)));
+        signOut.setOnClickListener(v -> {
             preferences.clearPreferences();
             startActivity(new Intent(DashboardActivity.this, LoginActivity.class));
             finish();
+        });
+
     }
 }

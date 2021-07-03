@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.TeamsPrototype" parent="Theme.Design.NoActionBar">
+    <style name="Theme.TeamsPrototype" parent="Theme.Design.Light.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_500</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
@@ -31,4 +31,6 @@
     <style name="Theme.TeamsPrototype.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.TeamsPrototype.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+
 </resources>

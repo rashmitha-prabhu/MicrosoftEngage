@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:drawableStart="@drawable/user"
+            android:drawableStart="@drawable/person"
             android:drawablePadding="10dp"
             android:drawableTint="@color/purple_200"
             android:ems="10"
@@ -103,7 +103,7 @@
                 android:clickable="true"
                 android:cropToPadding="false"
                 android:foregroundTint="@color/purple_700"
-                android:paddingLeft="10dp"
+                android:paddingStart="10dp"
                 app:srcCompat="@drawable/hide"
                 app:tint="@color/purple_200" />
 
@@ -137,7 +137,7 @@
                 android:layout_height="match_parent"
                 android:clickable="true"
                 android:cropToPadding="false"
-                android:paddingLeft="10dp"
+                android:paddingStart="10dp"
                 app:srcCompat="@drawable/hide"
                 app:tint="@color/purple_200" />
         </TableRow>
@@ -188,7 +188,8 @@
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textColor="@color/purple_700"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:focusable="true" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

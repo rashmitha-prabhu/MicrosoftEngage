@@ -28,7 +28,6 @@
             android:drawableStart="@drawable/edit"
             android:drawablePadding="10dp"
             android:drawableTint="@color/purple_200"
-            android:editable="true"
             android:ems="10"
             android:fontFamily="monospace"
             android:hint="Enter Meeting Code"

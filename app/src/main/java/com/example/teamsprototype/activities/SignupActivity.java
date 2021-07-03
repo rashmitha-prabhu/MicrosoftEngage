@@ -22,7 +22,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 
-public class SignupActivity extends AppCompatActivity implements View.OnClickListener{
+public class SignupActivity extends AppCompatActivity{
     FirebaseAuth auth;
     EditText username, emailTxt, passwordTxt, confirmPass;
     Button signUp;
@@ -53,61 +53,51 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
 
         auth = FirebaseAuth.getInstance();
 
-        signUp.setOnClickListener(this);
-        login.setOnClickListener(this);
-        showPass.setOnClickListener(this);
-        showConPass.setOnClickListener(this);
-    }
+        signUp.setOnClickListener(v -> {
+            name = username.getText().toString();
+            email = emailTxt.getText().toString();
+            password = passwordTxt.getText().toString();
+            con_pass = confirmPass.getText().toString();
 
-    @Override
-    public void onClick(View v) {
-        switch(v.getId()){
-            case R.id.signupBtn:
-                name = username.getText().toString();
-                email = emailTxt.getText().toString();
-                password = passwordTxt.getText().toString();
-                con_pass = confirmPass.getText().toString();
+            if(validateName(name) && validateEmail(email) && validatePassword(password, con_pass)){
+                signUp.setVisibility(View.GONE);
+                auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+                        signUp();
+                    }else{
+                        signUp.setVisibility(View.VISIBLE);
+                        Toast.makeText(SignupActivity.this, "Signup Unsuccessful", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
 
-                if(validateName(name) && validateEmail(email) && validatePassword(password, con_pass)){
-                    signUp.setVisibility(View.GONE);
-                    auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
-                        if(task.isSuccessful()){
-                            signUp();
-                        }else{
-                            signUp.setVisibility(View.VISIBLE);
-                            Toast.makeText(SignupActivity.this, "Signup Unsuccessful", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-                break;
+        login.setOnClickListener(v -> {
+            startActivity(new Intent(SignupActivity.this, LoginActivity.class));
+            finish();
+        });
 
-            case R.id.login:
-                startActivity(new Intent(SignupActivity.this, LoginActivity.class));
-                finish();
-                break;
+        showPass.setOnClickListener(v -> {
+            show_pass = !show_pass;
+            if(show_pass){
+                passwordTxt.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                showPass.setImageResource(R.drawable.hide);
+            } else {
+                passwordTxt.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                showPass.setImageResource(R.drawable.show);
+            }
+        });
 
-            case R.id.showPass:
-                show_pass = !show_pass;
-                if(show_pass){
-                    passwordTxt.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-                    showPass.setImageResource(R.drawable.hide);
-                } else {
-                    passwordTxt.setTransformationMethod(PasswordTransformationMethod.getInstance());
-                    showPass.setImageResource(R.drawable.show);
-                }
-                break;
-
-            case R.id.showConPass:
-                show_con_pass = !show_con_pass;
-                if(show_con_pass) {
-                    confirmPass.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-                    showConPass.setImageResource(R.drawable.show);
-                } else {
-                    confirmPass.setTransformationMethod(PasswordTransformationMethod.getInstance());
-                    showConPass.setImageResource(R.drawable.hide);
-                }
-                break;
-        }
+        showConPass.setOnClickListener(v -> {
+            show_con_pass = !show_con_pass;
+            if(show_con_pass) {
+                confirmPass.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                showConPass.setImageResource(R.drawable.show);
+            } else {
+                confirmPass.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                showConPass.setImageResource(R.drawable.hide);
+            }
+        });
     }
 
     private boolean validateName(String name){

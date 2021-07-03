@@ -21,7 +21,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
+public class LoginActivity extends AppCompatActivity{
     FirebaseAuth auth;
     EditText emailTxt, passwordTxt;
     Button login;
@@ -51,51 +51,43 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         signUp = findViewById(R.id.signUp);
         showPass = findViewById(R.id.showLogPass);
 
-        login.setOnClickListener(this);
-        signUp.setOnClickListener(this);
-        showPass.setOnClickListener(this);
-    }
+        login.setOnClickListener(v -> {
+            email = emailTxt.getText().toString();
+            password = passwordTxt.getText().toString();
+            if(email.trim().isEmpty()){
+                emailTxt.setError("Field can't be empty");
+            } else if (password.trim().isEmpty()){
+                passwordTxt.setError("Field can't be empty");
+            }
+            else{
+                login.setVisibility(View.GONE);
+                auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+                        login();
+                    } else {
+//                        Toast.makeText(LoginActivity.this, task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                        login.setVisibility(View.VISIBLE);
+                    }
+                });
+            }
+        });
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.loginBtn:
-                email = emailTxt.getText().toString();
-                password = passwordTxt.getText().toString();
-                if(email.trim().isEmpty()){
-                    emailTxt.setError("Field can't be empty");
-                } else if (password.trim().isEmpty()){
-                    passwordTxt.setError("Field can't be empty");
-                }
-                else{
-                    login.setVisibility(View.GONE);
-                    auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
-                        if(task.isSuccessful()){
-                            login();
-                        } else {
-                            Toast.makeText(LoginActivity.this, task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                            login.setVisibility(View.VISIBLE);
-                        }
-                    });
-                }
-                break;
+        signUp.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
+            startActivity(intent);
+            finish();
+        });
 
-            case R.id.signUp:
-                Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
-                startActivity(intent);
-                finish();
-                break;
-
-            case R.id.showLogPass:
-                show = !show;
-                if(show){
-                    passwordTxt.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-                    showPass.setImageResource(R.drawable.show);
-                } else {
-                    passwordTxt.setTransformationMethod(PasswordTransformationMethod.getInstance());
-                    showPass.setImageResource(R.drawable.hide);
-                }
-        }
+        showPass.setOnClickListener(v -> {
+            show = !show;
+            if(show){
+                passwordTxt.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                showPass.setImageResource(R.drawable.show);
+            } else {
+                passwordTxt.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                showPass.setImageResource(R.drawable.hide);
+            }
+        });
     }
 
     private void login() {

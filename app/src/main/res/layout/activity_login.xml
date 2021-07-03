@@ -39,7 +39,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginBottom="30dp"
-            app:srcCompat="@drawable/group" />
+            app:srcCompat="@drawable/group"/>
 
         <EditText
             android:id="@+id/loginEmail"
@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:drawableLeft="@drawable/email"
+            android:drawableStart="@drawable/email"
             android:drawablePadding="10dp"
             android:drawableTint="@color/purple_200"
             android:ems="10"
@@ -69,7 +69,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:drawableLeft="@drawable/lock"
+                android:drawableStart="@drawable/lock"
                 android:drawablePadding="10dp"
                 android:drawableTint="@color/purple_200"
                 android:ems="10"
@@ -86,9 +86,10 @@
                 android:layout_height="match_parent"
                 android:clickable="true"
                 android:cropToPadding="false"
-                android:paddingLeft="10dp"
+                android:paddingStart="10dp"
                 app:srcCompat="@drawable/hide"
-                app:tint="@color/purple_200" />
+                app:tint="@color/purple_200"
+                android:focusable="true" />
 
         </TableRow>
 

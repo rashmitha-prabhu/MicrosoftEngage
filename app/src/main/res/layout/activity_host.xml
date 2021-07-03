@@ -20,7 +20,6 @@
         tools:layout_editor_absoluteX="16dp">
 
         <ImageView
-            android:id="@+id/imageView4"
             android:layout_width="match_parent"
             android:layout_height="131dp"
             android:layout_gravity="center"
@@ -31,7 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:drawableLeft="@drawable/agenda"
+            android:drawableStart="@drawable/agenda"
             android:drawablePadding="10dp"
             android:drawableTint="@color/purple_200"
             android:ems="10"
@@ -39,7 +38,7 @@
             android:hint="Meeting Agenda"
             android:inputType="textPersonName"
             android:lines="1"
-            android:paddingLeft="10dp"
+            android:paddingStart="10dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textColor="@color/black"
             android:textColorHint="@color/grey" />
@@ -49,14 +48,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:drawableLeft="@drawable/date"
+            android:drawableStart="@drawable/date"
             android:drawablePadding="10dp"
             android:drawableTint="@color/purple_200"
             android:ems="10"
             android:fontFamily="monospace"
             android:hint="Meeting Date"
             android:inputType="date"
-            android:paddingLeft="10dp"
+            android:paddingStart="10dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textColor="@color/black"
             android:textColorHint="@color/grey" />
@@ -66,25 +65,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:drawableLeft="@drawable/time"
+            android:drawableStart="@drawable/time"
             android:drawablePadding="10dp"
             android:drawableTint="@color/purple_200"
             android:ems="10"
             android:fontFamily="monospace"
             android:hint="Meeting Time"
             android:inputType="time"
-            android:paddingLeft="10dp"
+            android:paddingStart="10dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textColor="@color/black"
             android:textColorHint="@color/grey" />
 
         <TextView
-            android:id="@+id/textView2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:fontFamily="monospace"
-            android:paddingLeft="20dp"
+            android:paddingStart="20dp"
             android:text="Meeting Code: "
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textColor="@color/black" />
@@ -116,8 +114,8 @@
                 android:id="@+id/share"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:layout_marginLeft="20dp"
+                android:layout_gravity="end"
+                android:layout_marginStart="20dp"
                 android:backgroundTint="@color/purple_700"
                 android:baselineAlignBottom="false"
                 android:clickable="true"
@@ -139,51 +137,62 @@
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp">
 
-            <Button
-                android:id="@+id/meet_now"
+            <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/button"
-                android:backgroundTint="#4CAF50"
-                android:drawableTint="@color/white"
-                android:text="Meet Now" />
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1">
 
-            <ProgressBar
-                android:id="@+id/progressBar2"
-                style="?android:attr/progressBarStyle"
+                <Button
+                    android:id="@+id/meet_now"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/button"
+                    android:backgroundTint="#4CAF50"
+                    android:drawableTint="@color/white"
+                    android:text="Meet Now" />
+
+                <ProgressBar
+                    android:id="@+id/meetProgress"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:indeterminateTint="#4CAF50"
+                    android:progressBackgroundTint="#4CAF50"
+                    android:progressTint="#4CAF50"
+                    android:secondaryProgressTint="#8BC34A" />
+
+            </TableRow>
+
+            <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:indeterminateTint="#4CAF50"
-                android:progressBackgroundTint="#4CAF50"
-                android:progressTint="#4CAF50"
-                android:secondaryProgressTint="#8BC34A" />
+                android:layout_marginStart="10dp"
+                android:layout_weight="1">
 
-        </TableRow>
+                <Button
+                    android:id="@+id/meet_later"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/button"
+                    android:text="SCHEDULE MEET" />
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+                <ProgressBar
+                    android:id="@+id/scheduleProgress"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:indeterminateTint="@color/purple_700"
+                    android:progressBackgroundTint="@color/purple_700"
+                    android:progressTint="@color/purple_500"
+                    android:secondaryProgressTint="@color/purple_200" />
 
-            <Button
-                android:id="@+id/meet_later"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/button"
-                android:text="SCHEDULE MEET" />
-
-            <ProgressBar
-                android:id="@+id/progressBar3"
-                style="?android:attr/progressBarStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:indeterminateTint="@color/purple_700"
-                android:progressBackgroundTint="@color/purple_700"
-                android:progressTint="@color/purple_500"
-                android:secondaryProgressTint="@color/purple_200" />
-
+            </TableRow>
         </TableRow>
 
     </LinearLayout>
