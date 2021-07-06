@@ -21,6 +21,7 @@
             android:id="@+id/back"
             android:layout_width="40dp"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:clickable="true"
             android:tint="@color/white"
             app:srcCompat="@drawable/back" />
@@ -29,11 +30,13 @@
             android:id="@+id/p_name"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_gravity="center"
             android:background="@drawable/round_btn"
             android:backgroundTint="@color/teal_200"
             android:fontFamily="sans-serif-black"
             android:gravity="center_vertical"
             android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/white"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@+id/name"
@@ -44,13 +47,26 @@
             android:id="@+id/chat_name"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:layout_weight="1"
             android:fontFamily="serif-monospace"
             android:gravity="center_vertical"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/white"
             android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/start_call"
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginEnd="10dp"
+            android:cropToPadding="false"
+            android:tint="@color/white"
+            app:srcCompat="@drawable/video_on" />
+
     </LinearLayout>
 
 

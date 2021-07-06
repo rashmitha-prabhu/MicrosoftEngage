@@ -1,6 +1,4 @@
 <resources>
     <string name="app_name">TeamsPrototype</string>
     <string name="agora_app_id">a63728053a234d99b38e00eedd0714a0</string>
-    <string name="pubNub_sub_key">sub-c-6a62a2bc-dd77-11eb-bc72-ba1258ebcf9d</string>
-    <string name="pubNub_pub_key">pub-c-17cf4899-3948-43ca-bd86-065f9cf3c810</string>
 </resources>
