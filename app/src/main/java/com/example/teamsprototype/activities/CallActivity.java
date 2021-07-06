@@ -76,12 +76,7 @@ public class CallActivity extends AppCompatActivity{
         @Override
         public void onUserInfoUpdated(int uid, UserInfo userInfo) {
             super.onUserInfoUpdated(uid, userInfo);
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    remote_Id = userInfo.userAccount;
-                }
-            });
+            runOnUiThread(() -> remote_Id = userInfo.userAccount);
         }
 
         @Override
@@ -199,7 +194,6 @@ public class CallActivity extends AppCompatActivity{
                         remote_name = documentSnapshot.getString(AppConstants.NAME);
                         intent.putExtra("name", remote_name);
                         intent.putExtra("uid", remote_Id);
-                        intent.putExtra("prevActivity", "Call");
                         startActivity(intent);
                     })
                     .addOnFailureListener(e -> Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show());

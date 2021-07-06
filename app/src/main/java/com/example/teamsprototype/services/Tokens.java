@@ -22,7 +22,7 @@ public class Tokens{
     static boolean success = false;
     static String token = null;
 
-    public static boolean createToken(String channelName, int uid) {
+    public static String createToken(String channelName, int uid) {
         String url = "https://agoratokens.azurewebsites.net/access_token?channelName=" + channelName + "&uid=" + uid;
 
         OkHttpClient client = new OkHttpClient();
@@ -70,6 +70,6 @@ public class Tokens{
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return success;
+        return token;
     }
 }

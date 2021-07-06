@@ -7,9 +7,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.telecom.Call;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -23,6 +26,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.teamsprototype.R;
 import com.example.teamsprototype.adapters.MessageAdapter;
 import com.example.teamsprototype.model.Message;
+import com.example.teamsprototype.services.ChannelNameGenerator;
+import com.example.teamsprototype.services.Tokens;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -49,7 +54,7 @@ public class ConversationActivity extends AppCompatActivity {
     FirebaseStorage storage;
     RecyclerView chat_view;
     String senderRoom, receiverRoom;
-    ImageView attachment;
+    ImageView attachment, start_call, back;
     String senderUid, receiverUid;
     ProgressDialog dialog;
     TextView textView, p_name;
@@ -136,11 +141,8 @@ public class ConversationActivity extends AppCompatActivity {
             });
         });
 
-        ImageView back = findViewById(R.id.back);
+        back = findViewById(R.id.back);
         back.setOnClickListener(v -> {
-            if (!getIntent().getStringExtra("prevActivity").equals("Call")) {
-                startActivity(new Intent(getBaseContext(), ChatActivity.class));
-            }
             finish();
         });
 
@@ -151,6 +153,23 @@ public class ConversationActivity extends AppCompatActivity {
             intent.setType("image/*");
             launcher.launch(intent);
         });
+
+        start_call =  findViewById(R.id.start_call);
+        start_call.setOnClickListener(v -> {
+            String channelName = ChannelNameGenerator.randomString();
+            String token = Tokens.createToken(channelName, 0);
+            String uid = senderUid;
+            
+            if(token != null){
+                Intent intent = new Intent(getApplicationContext(), CallActivity.class);
+                intent.putExtra("channelName", channelName);
+                intent.putExtra("token", token);
+                intent.putExtra("uid", uid);
+            } else {
+                Toast.makeText(getBaseContext(), "Error in creating room. Retry...", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     ActivityResultLauncher<Intent> launcher = registerForActivityResult(
