@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/dashboard"
+        android:icon="@drawable/home"
+        android:title="Home" />
+    <item
+        android:id="@+id/chatActivity"
+        android:icon="@drawable/chat"
+        android:title="Chats" />
+    <item
+        android:id="@+id/schedule"
+        android:icon="@drawable/date"
+        android:title="Schedule" />
+    <item
+        android:id="@+id/logout"
+        android:icon="@drawable/sign_out"
+        android:title="Logout" />
+</menu>

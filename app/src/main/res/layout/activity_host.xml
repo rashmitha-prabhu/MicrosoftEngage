@@ -153,7 +153,9 @@
                     android:background="@drawable/button"
                     android:backgroundTint="#4CAF50"
                     android:drawableTint="@color/white"
-                    android:text="Meet Now" />
+                    android:fontFamily="monospace"
+                    android:text="Meet Now"
+                    android:textColor="@color/white" />
 
                 <ProgressBar
                     android:id="@+id/meetProgress"
@@ -179,7 +181,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/button"
-                    android:text="SCHEDULE MEET" />
+                    android:fontFamily="monospace"
+                    android:text="SCHEDULE MEET"
+                    android:textColor="@color/white" />
 
                 <ProgressBar
                     android:id="@+id/scheduleProgress"

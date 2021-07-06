@@ -15,12 +15,13 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.teamsprototype.R;
+import com.example.teamsprototype.services.User;
 import com.example.teamsprototype.utilities.AppConstants;
 import com.example.teamsprototype.utilities.Preferences;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.HashMap;
+import java.util.Random;
 
 public class SignupActivity extends AppCompatActivity{
     FirebaseAuth auth;
@@ -140,17 +141,17 @@ public class SignupActivity extends AppCompatActivity{
 
     private void signUp() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        HashMap<String, Object> user = new HashMap<>();
-        user.put(AppConstants.NAME, name);
-        user.put(AppConstants.EMAIL, email);
-        user.put(AppConstants.PASSWORD, password);
+        String uid = auth.getUid();
+        User user = new User(uid, name, email, password);
 
-        db.collection(AppConstants.KEY_COLLECTION).document(email).set(user)
+        db.collection(AppConstants.KEY_COLLECTION).document(uid).set(user)
                 .addOnSuccessListener(documentReference -> {
                     preferences.putBoolean(AppConstants.SIGNED_IN, true);
                     preferences.putString(AppConstants.NAME, name);
                     preferences.putString(AppConstants.EMAIL, email);
                     preferences.putString(AppConstants.PASSWORD, password);
+                    preferences.putString(AppConstants.USER_ID, uid);
+
                     Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);

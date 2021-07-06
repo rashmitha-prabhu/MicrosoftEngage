@@ -65,6 +65,21 @@
         android:paddingBottom="10dp">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/chat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="5dp"
+            android:backgroundTint="@color/transparent"
+            android:clickable="true"
+            android:tint="@color/white"
+            app:backgroundTint="@color/purple_700"
+            app:fabSize="mini"
+            app:srcCompat="@drawable/message" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/mic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

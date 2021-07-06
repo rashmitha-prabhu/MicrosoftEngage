@@ -47,7 +47,10 @@
                 android:layout_gravity="center"
                 android:background="@drawable/button"
                 android:backgroundTint="#4CAF50"
-                android:text="Join Meeting" />
+                android:fontFamily="monospace"
+                android:text="Join Meeting"
+                android:textColor="@color/white"
+                android:textStyle="bold" />
 
             <ProgressBar
                 android:id="@+id/joining"

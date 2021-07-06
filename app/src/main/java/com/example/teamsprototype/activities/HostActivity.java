@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.teamsprototype.R;
 import com.example.teamsprototype.services.Tokens;
 import com.example.teamsprototype.utilities.AppConstants;
+import com.example.teamsprototype.utilities.Preferences;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -36,6 +37,7 @@ public class HostActivity extends AppCompatActivity
     String room, token;
     FirebaseFirestore db;
     boolean done;
+    Preferences preferences;
 
     String randomString(){
         StringBuilder sb = new StringBuilder(10);
@@ -53,6 +55,8 @@ public class HostActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_host);
         room = randomString();
+
+        preferences = new Preferences(this);
 
         agenda = findViewById(R.id.agenda);
         date = findViewById(R.id.date);
@@ -95,6 +99,7 @@ public class HostActivity extends AppCompatActivity
         meet_now.setOnClickListener(v -> {
             meet_now.setVisibility(View.GONE);
             done = Tokens.createToken(room, 0);
+
             if(done){
                 db = FirebaseFirestore.getInstance();
                 db.collection(AppConstants.TOKENS).document(room).get()
@@ -104,6 +109,7 @@ public class HostActivity extends AppCompatActivity
                             Intent intent = new Intent(getApplicationContext(), CallActivity.class);
                             intent.putExtra("channelName", room);
                             intent.putExtra("token", token);
+                            intent.putExtra("uid", preferences.getString(AppConstants.USER_ID));
                             startActivity(intent);
                             finish();
                         })
@@ -115,7 +121,6 @@ public class HostActivity extends AppCompatActivity
             } else {
                 Toast.makeText(getApplicationContext(), "Error in creating room. Retry", Toast.LENGTH_SHORT).show();
             }
-
         });
 
         schedule_meet.setOnClickListener(v -> {
@@ -155,7 +160,7 @@ public class HostActivity extends AppCompatActivity
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        String meetTime = hourOfDay+":"+minute+":00";
+        String meetTime = hourOfDay+":"+minute;
         time.setText(meetTime);
     }
 }

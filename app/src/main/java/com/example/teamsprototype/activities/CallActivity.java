@@ -10,18 +10,30 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.example.teamsprototype.R;
+import com.example.teamsprototype.utilities.AppConstants;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
 import io.agora.rtc.Constants;
 import io.agora.rtc.IRtcEngineEventHandler;
 import io.agora.rtc.RtcEngine;
+import io.agora.rtc.models.UserInfo;
 import io.agora.rtc.video.VideoCanvas;
 import io.agora.rtc.video.VideoEncoderConfiguration;
 
@@ -32,8 +44,8 @@ public class CallActivity extends AppCompatActivity{
     RelativeLayout remoteContainer;
     ImageView localUser;
     SurfaceView localView, remoteView;
-    FloatingActionButton mute_btn, video_btn, end_call_btn, switchCam_btn;
-    String channelName, token;
+    FloatingActionButton mute_btn, video_btn, end_call_btn, switchCam_btn, chat_btn;
+    String channelName, token, local_Id, remote_Id, remote_name;
 
     boolean mute = true;
     boolean cam = false;
@@ -46,6 +58,11 @@ public class CallActivity extends AppCompatActivity{
         }
 
         @Override
+        public void onLocalUserRegistered(int uid, String userAccount) {
+            super.onLocalUserRegistered(uid, userAccount);
+        }
+
+        @Override
         public void onRejoinChannelSuccess(String channel, final int uid, int elapsed){
             super.onRejoinChannelSuccess(channel, uid, elapsed);
         }
@@ -54,6 +71,17 @@ public class CallActivity extends AppCompatActivity{
         public void onUserJoined(final int uid, int elapsed){
             super.onUserJoined(uid, elapsed);
             runOnUiThread(() -> remoteUserJoined());
+        }
+
+        @Override
+        public void onUserInfoUpdated(int uid, UserInfo userInfo) {
+            super.onUserInfoUpdated(uid, userInfo);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    remote_Id = userInfo.userAccount;
+                }
+            });
         }
 
         @Override
@@ -109,15 +137,19 @@ public class CallActivity extends AppCompatActivity{
         Intent intent = getIntent();
         channelName = intent.getStringExtra("channelName");
         token = intent.getStringExtra("token");
+        local_Id = intent.getStringExtra("uid");
 
-        end_call_btn = findViewById(R.id.hangUp);
-        switchCam_btn = findViewById(R.id.switchCam);
+        chat_btn = findViewById(R.id.chat);
         mute_btn = findViewById(R.id.mic);
         video_btn = findViewById(R.id.video);
+        switchCam_btn = findViewById(R.id.switchCam);
+        end_call_btn = findViewById(R.id.hangUp);
+
         localContainer = findViewById(R.id.localVideo);
         localUser = findViewById(R.id.local_user);
         remoteContainer = findViewById(R.id.remoteVideo);
 
+        chat_btn.setOnClickListener(v -> chat_view());
         mute_btn.setOnClickListener(v -> audio_toggle());
         video_btn.setOnClickListener(v -> video_toggle());
         switchCam_btn.setOnClickListener(v -> mRtcEngine.switchCamera());
@@ -127,12 +159,12 @@ public class CallActivity extends AppCompatActivity{
         initializeRtcEngine();
         setVideoConfig();
         joinChannel();
-
     }
 
     private void initializeRtcEngine() {
         try {
             mRtcEngine = RtcEngine.create(getBaseContext(), getString(R.string.agora_app_id), mRtcHandler);
+            mRtcEngine.registerLocalUserAccount(getString(R.string.agora_app_id), local_Id);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -153,7 +185,25 @@ public class CallActivity extends AppCompatActivity{
         mRtcEngine.enableLocalVideo(false);
         mRtcEngine.enableLocalAudio(false);
         mRtcEngine.muteLocalAudioStream(true);
-        mRtcEngine.joinChannel(token, channelName, "", 0);
+        mRtcEngine.joinChannelWithUserAccount(token, channelName, local_Id);
+    }
+
+    private void chat_view() {
+        if(remote_Id == null){
+            Toast.makeText(getApplicationContext(), "No chat channel available", Toast.LENGTH_SHORT).show();
+        } else {
+            Intent intent = new Intent(CallActivity.this, ConversationActivity.class);
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection(AppConstants.KEY_COLLECTION).document(remote_Id).get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        remote_name = documentSnapshot.getString(AppConstants.NAME);
+                        intent.putExtra("name", remote_name);
+                        intent.putExtra("uid", remote_Id);
+                        intent.putExtra("prevActivity", "Call");
+                        startActivity(intent);
+                    })
+                    .addOnFailureListener(e -> Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show());
+        }
     }
 
     private void audio_toggle() {
@@ -238,6 +288,7 @@ public class CallActivity extends AppCompatActivity{
         if(view != null){
             return;
         }
+
         remoteView = RtcEngine.CreateRendererView(getBaseContext());
         remoteContainer.addView(remoteView);
         mRtcEngine.setupRemoteVideo(new VideoCanvas(remoteView, VideoCanvas.RENDER_MODE_HIDDEN, uid));

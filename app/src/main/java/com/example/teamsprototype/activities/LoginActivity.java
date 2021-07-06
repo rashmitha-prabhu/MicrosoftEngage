@@ -11,14 +11,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.teamsprototype.R;
 import com.example.teamsprototype.utilities.AppConstants;
 import com.example.teamsprototype.utilities.Preferences;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import org.jetbrains.annotations.NotNull;
 
 
 public class LoginActivity extends AppCompatActivity{
@@ -65,7 +73,6 @@ public class LoginActivity extends AppCompatActivity{
                     if(task.isSuccessful()){
                         login();
                     } else {
-//                        Toast.makeText(LoginActivity.this, task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                         login.setVisibility(View.VISIBLE);
                     }
                 });
@@ -100,9 +107,10 @@ public class LoginActivity extends AppCompatActivity{
                     if(task.isSuccessful() && task.getResult()!=null){
                         DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
                         preferences.putBoolean(AppConstants.SIGNED_IN, true);
-                        preferences.putString(AppConstants.USER_ID, documentSnapshot.getId());
+                        preferences.putString(AppConstants.USER_ID, documentSnapshot.getString(AppConstants.USER_ID));
                         preferences.putString(AppConstants.NAME, documentSnapshot.getString(AppConstants.NAME));
                         preferences.putString(AppConstants.EMAIL, documentSnapshot.getString(AppConstants.EMAIL));
+
                         Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);

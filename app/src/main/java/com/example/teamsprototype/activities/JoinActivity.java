@@ -10,7 +10,10 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.teamsprototype.R;
+import com.example.teamsprototype.services.Tokens;
 import com.example.teamsprototype.utilities.AppConstants;
+import com.example.teamsprototype.utilities.Preferences;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -20,12 +23,14 @@ public class JoinActivity extends AppCompatActivity {
     Button join;
     static String token, room;
     CollectionReference db;
+    Preferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join);
         db = FirebaseFirestore.getInstance().collection(AppConstants.TOKENS);
+        preferences = new Preferences(getApplicationContext());
 
         code = findViewById(R.id.joinCode);
         join = findViewById(R.id.joinBtn);
@@ -36,6 +41,8 @@ public class JoinActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Enter room code", Toast.LENGTH_SHORT).show();
             } else {
                 join.setVisibility(View.GONE);
+                String uid = preferences.getString(AppConstants.USER_ID);
+
                 db.document(room).get()
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
@@ -46,7 +53,8 @@ public class JoinActivity extends AppCompatActivity {
                                     Intent intent = new Intent(JoinActivity.this.getApplicationContext(), CallActivity.class);
                                     intent.putExtra("channelName", room);
                                     intent.putExtra("token", token);
-                                    JoinActivity.this.startActivity(intent);
+                                    intent.putExtra("uid", uid);
+                                    startActivity(intent);
                                     finish();
                                 } else {
                                     token = null;

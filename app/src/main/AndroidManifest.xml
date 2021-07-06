@@ -19,6 +19,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TeamsPrototype"
         android:usesCleartextTraffic="true">
+        <activity android:name=".activities.ConversationActivity"></activity>
+        <activity android:name=".activities.ChatActivity" />
         <activity android:name=".activities.CalendarActivity" />
 
         <uses-library
@@ -38,6 +40,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/logo" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/purple_500" />
+
     </application>
 
 </manifest>

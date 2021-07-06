@@ -5,7 +5,7 @@ public class AppConstants {
     public static final String NAME = "name";
     public static final String EMAIL = "email";
     public static final String PASSWORD = "password";
-    public static final String USER_ID = "user_id";
+    public static final String USER_ID = "uid";
 
     public static final String PREFERENCE = "teamsCallPreference";
     public static final String SIGNED_IN = "isSignedIn";

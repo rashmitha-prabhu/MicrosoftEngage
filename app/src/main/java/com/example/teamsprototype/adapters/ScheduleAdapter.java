@@ -1,6 +1,8 @@
-package com.example.teamsprototype.utilities;
+package com.example.teamsprototype.adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,22 +19,27 @@ import com.example.teamsprototype.activities.CalendarActivity;
 import com.example.teamsprototype.activities.CallActivity;
 import com.example.teamsprototype.model.MeetingModel;
 import com.example.teamsprototype.services.Tokens;
+import com.example.teamsprototype.utilities.AppConstants;
+import com.example.teamsprototype.utilities.DatabaseHandler;
+import com.example.teamsprototype.utilities.Preferences;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
+public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHolder> {
 
     private List<MeetingModel> meetingList;
     private final CalendarActivity activity;
     private final DatabaseHandler db;
     private String token;
+    Preferences preferences;
 
-    public Adapter(DatabaseHandler db, CalendarActivity activity){
+    public ScheduleAdapter(DatabaseHandler db, CalendarActivity activity){
         this.db = db;
         this.activity = activity;
+        this.preferences = new Preferences(activity.getApplicationContext());
     }
 
     public @NotNull ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
@@ -103,15 +110,28 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
             });
 
             delete.setOnClickListener(v12 -> {
-                int position = getAbsoluteAdapterPosition();
-                deleteItem(position);
+                AlertDialog alert = new AlertDialog.Builder(getContext())
+                        .setTitle("Delete Meeting")
+                        .setMessage("Are you sure you want to delete?")
+                        .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                int position = getAbsoluteAdapterPosition();
+                                deleteItem(position);
+                            }
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .setIcon(R.drawable.alert)
+                        .show();
             });
 
             meet.setOnClickListener(v13 -> {
                 int position = getAbsoluteAdapterPosition();
                 MeetingModel item = meetingList.get(position);
                 String code = item.getCode();
+                String uid = preferences.getString(AppConstants.USER_ID);
                 boolean done = Tokens.createToken(code, 0);
+
                 if(done) {
                     FirebaseFirestore fdb = FirebaseFirestore.getInstance();
                     fdb.collection(AppConstants.TOKENS).document(code).get()
@@ -121,6 +141,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
                                 Intent intent = new Intent(v13.getContext(), CallActivity.class);
                                 intent.putExtra("channelName", code);
                                 intent.putExtra("token", token);
+                                intent.putExtra("uid", uid);
                                 v13.getContext().startActivity(intent);
                             })
                             .addOnFailureListener(e -> {
