@@ -1,10 +1,14 @@
 package com.example.teamsprototype.model;
 
 public class Message {
+    private String messageId;
     private String message;
     private String sender_id;
     private String imageUrl;
     private long time;
+
+    public Message() {
+    }
 
     public Message(String message, String sender_id, long time) {
         this.message = message;

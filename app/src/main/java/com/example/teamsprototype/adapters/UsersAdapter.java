@@ -88,6 +88,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UsersViewHol
             Intent intent = new Intent(context, ConversationActivity.class);
             intent.putExtra("name", user.getName());
             intent.putExtra("uid", user.getUid());
+            intent.putExtra("prevAct", "chat");
             context.startActivity(intent);
         });
     }

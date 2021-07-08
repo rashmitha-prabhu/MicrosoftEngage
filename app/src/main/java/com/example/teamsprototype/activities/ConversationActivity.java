@@ -148,27 +148,31 @@ public class ConversationActivity extends AppCompatActivity {
         });
 
         start_call =  findViewById(R.id.start_call);
-        start_call.setOnClickListener(v -> {
+        if(getIntent().getStringExtra("prevAct").equals("call")){
             start_call.setVisibility(View.INVISIBLE);
-            progressBar.setVisibility(View.VISIBLE);
-            String channelName = ChannelNameGenerator.randomString();
-            String token = Tokens.createToken(channelName, 0);
+        } else {
+            start_call.setOnClickListener(v -> {
+                start_call.setVisibility(View.INVISIBLE);
+                progressBar.setVisibility(View.VISIBLE);
+                String channelName = ChannelNameGenerator.randomString();
+                String token = Tokens.createToken(channelName, 0);
 
-            if(token != null){
-                Intent intent = new Intent(getApplicationContext(), OutgoingCall.class);
-                intent.putExtra("channelName", channelName);
-                intent.putExtra("token", token);
-                intent.putExtra("receiver_uid", receiverUid);
-                intent.putExtra("name", name);
-                start_call.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.INVISIBLE);
-                startActivity(intent);
-            } else {
-                start_call.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.INVISIBLE);
-                Toast.makeText(getBaseContext(), "Error in creating room. Retry...", Toast.LENGTH_SHORT).show();
-            }
-        });
+                if (token != null) {
+                    Intent intent = new Intent(getApplicationContext(), OutgoingCall.class);
+                    intent.putExtra("channelName", channelName);
+                    intent.putExtra("token", token);
+                    intent.putExtra("receiver_uid", receiverUid);
+                    intent.putExtra("name", name);
+                    start_call.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.INVISIBLE);
+                    startActivity(intent);
+                } else {
+                    start_call.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.INVISIBLE);
+                    Toast.makeText(getBaseContext(), "Error in creating room. Retry...", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
     ActivityResultLauncher<Intent> launcher = registerForActivityResult(

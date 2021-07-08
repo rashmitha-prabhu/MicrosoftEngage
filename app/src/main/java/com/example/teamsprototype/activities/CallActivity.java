@@ -189,6 +189,7 @@ public class CallActivity extends AppCompatActivity{
             Intent intent = new Intent(CallActivity.this, ConversationActivity.class);
             intent.putExtra("name", remote_name);
             intent.putExtra("uid", remote_Id);
+            intent.putExtra("prevAct", "call");
             startActivity(intent);
         }
     }
