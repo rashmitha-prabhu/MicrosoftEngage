@@ -54,6 +54,7 @@ public class JoinActivity extends AppCompatActivity {
                                     intent.putExtra("channelName", room);
                                     intent.putExtra("token", token);
                                     intent.putExtra("uid", uid);
+                                    intent.putExtra("name", preferences.getString(AppConstants.NAME));
                                     startActivity(intent);
                                     finish();
                                 } else {

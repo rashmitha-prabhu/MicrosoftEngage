@@ -60,7 +60,7 @@ public class CalendarActivity extends AppCompatActivity {
 
         bottomNav = findViewById(R.id.bottomNav);
         bottomNav.setSelectedItemId(R.id.schedule);
-        bottomNav.setOnNavigationItemSelectedListener(item -> {
+        bottomNav.setOnItemSelectedListener(item -> {
             switch (item.getItemId()){
                 case R.id.dashboard:
                     startActivity(new Intent(getApplicationContext(), DashboardActivity.class));

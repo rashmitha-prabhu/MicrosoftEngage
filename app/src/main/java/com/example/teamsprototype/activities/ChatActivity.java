@@ -16,6 +16,7 @@ import com.example.teamsprototype.utilities.Preferences;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -69,7 +70,7 @@ public class ChatActivity extends AppCompatActivity {
 
         bottomNav = findViewById(R.id.bottomNav);
         bottomNav.setSelectedItemId(R.id.chatActivity);
-        bottomNav.setOnNavigationItemSelectedListener(item -> {
+        bottomNav.setOnItemSelectedListener(item -> {
             switch (item.getItemId()){
                 case R.id.dashboard:
                     startActivity(new Intent(getApplicationContext(), DashboardActivity.class));

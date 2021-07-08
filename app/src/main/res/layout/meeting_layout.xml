@@ -138,7 +138,8 @@
                 android:layout_marginBottom="5dp"
                 android:clickable="true"
                 app:srcCompat="@drawable/share"
-                app:tint="@color/purple_700" />
+                app:tint="@color/purple_700"
+                android:background="?selectableItemBackground"/>
 
             <ImageView
                 android:id="@+id/start_meeting"
@@ -147,7 +148,8 @@
                 android:layout_marginBottom="5dp"
                 android:clickable="true"
                 app:srcCompat="@drawable/video_on"
-                app:tint="#4CAF50" />
+                app:tint="#4CAF50"
+                android:background="?selectableItemBackground" />
 
             <ImageView
                 android:id="@+id/delete_meeting"
@@ -155,7 +157,8 @@
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 app:srcCompat="@drawable/delete"
-                app:tint="@color/red" />
+                app:tint="@color/red"
+                android:background="?selectableItemBackground" />
 
         </LinearLayout>
     </LinearLayout>

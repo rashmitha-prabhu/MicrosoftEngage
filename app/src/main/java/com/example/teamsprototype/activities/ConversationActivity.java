@@ -11,6 +11,7 @@ import android.telecom.Call;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,12 +29,18 @@ import com.example.teamsprototype.adapters.MessageAdapter;
 import com.example.teamsprototype.model.Message;
 import com.example.teamsprototype.services.ChannelNameGenerator;
 import com.example.teamsprototype.services.Tokens;
+import com.example.teamsprototype.utilities.AppConstants;
+import com.example.teamsprototype.utilities.Preferences;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -58,6 +65,7 @@ public class ConversationActivity extends AppCompatActivity {
     String senderUid, receiverUid;
     ProgressDialog dialog;
     TextView textView, p_name;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +75,8 @@ public class ConversationActivity extends AppCompatActivity {
         dialog = new ProgressDialog(this);
         dialog.setMessage("Uploading Image");
         dialog.setCancelable(false);
+
+        progressBar = findViewById(R.id.progress);
 
         send = findViewById(R.id.send_btn);
         msg_box = findViewById(R.id.message_box);
@@ -156,20 +166,26 @@ public class ConversationActivity extends AppCompatActivity {
 
         start_call =  findViewById(R.id.start_call);
         start_call.setOnClickListener(v -> {
+            start_call.setVisibility(View.INVISIBLE);
+            progressBar.setVisibility(View.VISIBLE);
             String channelName = ChannelNameGenerator.randomString();
             String token = Tokens.createToken(channelName, 0);
-            String uid = senderUid;
-            
+
             if(token != null){
-                Intent intent = new Intent(getApplicationContext(), CallActivity.class);
+                Intent intent = new Intent(getApplicationContext(), OutgoingCall.class);
                 intent.putExtra("channelName", channelName);
                 intent.putExtra("token", token);
-                intent.putExtra("uid", uid);
+                intent.putExtra("receiver_uid", receiverUid);
+                intent.putExtra("name", name);
+                start_call.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.INVISIBLE);
+                startActivity(intent);
             } else {
+                start_call.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.INVISIBLE);
                 Toast.makeText(getBaseContext(), "Error in creating room. Retry...", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
     ActivityResultLauncher<Intent> launcher = registerForActivityResult(

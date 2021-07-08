@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="5dp"
+    android:background="?selectableItemBackground"
     >
 
     <TextView
@@ -39,7 +40,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="monospace"
-        android:text="Say Hi!"
+        android:text="Tap to chat"
         android:textColor="@color/grey"
         app:layout_constraintStart_toEndOf="@id/profile"
         app:layout_constraintStart_toStartOf="@id/name"
@@ -50,7 +51,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="time"
-        android:text="8:00pm"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toRightOf="parent"

@@ -12,14 +12,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.teamsprototype.R;
 import com.example.teamsprototype.services.User;
 import com.example.teamsprototype.utilities.AppConstants;
 import com.example.teamsprototype.utilities.Preferences;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.installations.FirebaseInstallations;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
 
@@ -33,7 +39,7 @@ public class SignupActivity extends AppCompatActivity{
     boolean show_pass=false;
     boolean show_con_pass=false;
 
-    String name, email, password, con_pass;
+    String name, email, password, con_pass, fcm_token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,6 +147,7 @@ public class SignupActivity extends AppCompatActivity{
 
     private void signUp() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+
         String uid = auth.getUid();
         User user = new User(uid, name, email, password);
 
@@ -159,4 +166,7 @@ public class SignupActivity extends AppCompatActivity{
                 })
                 .addOnFailureListener(e -> Toast.makeText(SignupActivity.this, "Error: "+e.getMessage(), Toast.LENGTH_SHORT).show());
     }
+
+
+
 }

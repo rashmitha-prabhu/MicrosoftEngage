@@ -36,19 +36,7 @@ public class HostActivity extends AppCompatActivity
     Button meet_now, schedule_meet;
     Calendar c = Calendar.getInstance();
     String room, token;
-    FirebaseFirestore db;
-    boolean done;
     Preferences preferences;
-
-//    String randomString(){
-//        StringBuilder sb = new StringBuilder(10);
-//        String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-//        for(int i=0; i<10; i++){
-//            int n = (int)(alphabet.length()*Math.random());
-//            sb.append(alphabet.charAt(n));
-//        }
-//        return sb.toString();
-//    }
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -57,7 +45,7 @@ public class HostActivity extends AppCompatActivity
         setContentView(R.layout.activity_host);
         room = ChannelNameGenerator.randomString();
 
-        preferences = new Preferences(this);
+        preferences = new Preferences(getApplicationContext());
 
         agenda = findViewById(R.id.agenda);
         date = findViewById(R.id.date);
@@ -99,39 +87,20 @@ public class HostActivity extends AppCompatActivity
 
         meet_now.setOnClickListener(v -> {
             meet_now.setVisibility(View.GONE);
+            Toast.makeText(getApplicationContext(), "Getting the meeting ready...", Toast.LENGTH_SHORT).show();
             token = Tokens.createToken(room, 0);
-            if(token == null){
-                Toast.makeText(getApplicationContext(), "Error in creating room. Retry...", Toast.LENGTH_SHORT).show();
-            } else {
+            if(token != null){
                 Intent intent = new Intent(getApplicationContext(), CallActivity.class);
                 intent.putExtra("channelName", room);
                 intent.putExtra("token", token);
                 intent.putExtra("uid", preferences.getString(AppConstants.USER_ID));
+                intent.putExtra("name", preferences.getString(AppConstants.NAME));
                 startActivity(intent);
                 finish();
+            } else {
+                meet_now.setVisibility(View.VISIBLE);
+                Toast.makeText(getApplicationContext(), "Error in creating room. Retry", Toast.LENGTH_SHORT).show();
             }
-
-//            if(done){
-//                db = FirebaseFirestore.getInstance();
-//                db.collection(AppConstants.TOKENS).document(room).get()
-//                        .addOnSuccessListener(documentSnapshot -> {
-//                            Toast.makeText(getApplicationContext(), "Getting the meeting ready...", Toast.LENGTH_SHORT).show();
-//                            token = documentSnapshot.getString("token");
-//                            Intent intent = new Intent(getApplicationContext(), CallActivity.class);
-//                            intent.putExtra("channelName", room);
-//                            intent.putExtra("token", token);
-//                            intent.putExtra("uid", preferences.getString(AppConstants.USER_ID));
-//                            startActivity(intent);
-//                            finish();
-//                        })
-//                        .addOnFailureListener(e -> {
-//                            token = null;
-//                            meet_now.setVisibility(View.VISIBLE);
-//                            Toast.makeText(getApplicationContext(), "Retry...", Toast.LENGTH_SHORT).show();
-//                        });
-//            } else {
-//                Toast.makeText(getApplicationContext(), "Error in creating room. Retry", Toast.LENGTH_SHORT).show();
-//            }
         });
 
         schedule_meet.setOnClickListener(v -> {

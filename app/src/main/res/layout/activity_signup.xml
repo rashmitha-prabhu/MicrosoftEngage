@@ -160,7 +160,7 @@
                 android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textColor="@color/white"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
             <ProgressBar
                 style="?android:attr/progressBarStyle"

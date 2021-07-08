@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -40,12 +41,13 @@ import io.agora.rtc.video.VideoEncoderConfiguration;
 public class CallActivity extends AppCompatActivity{
 
     private RtcEngine mRtcEngine;
-    FrameLayout localContainer;
     RelativeLayout remoteContainer;
+    FrameLayout localContainer;
     ImageView localUser;
+    TextView localName, remoteName;
     SurfaceView localView, remoteView;
     FloatingActionButton mute_btn, video_btn, end_call_btn, switchCam_btn, chat_btn;
-    String channelName, token, local_Id, remote_Id, remote_name;
+    String channelName, token, local_Id, remote_Id, remote_name, name;
 
     boolean mute = true;
     boolean cam = false;
@@ -70,13 +72,15 @@ public class CallActivity extends AppCompatActivity{
         @Override
         public void onUserJoined(final int uid, int elapsed){
             super.onUserJoined(uid, elapsed);
-            runOnUiThread(() -> remoteUserJoined());
         }
 
         @Override
         public void onUserInfoUpdated(int uid, UserInfo userInfo) {
             super.onUserInfoUpdated(uid, userInfo);
-            runOnUiThread(() -> remote_Id = userInfo.userAccount);
+            runOnUiThread(() -> {
+                remote_Id = userInfo.userAccount;
+                remoteUserJoined();
+            });
         }
 
         @Override
@@ -94,7 +98,6 @@ public class CallActivity extends AppCompatActivity{
 
             if(state == Constants.REMOTE_VIDEO_STATE_STOPPED){
                 runOnUiThread(() -> removeRemoteVideo());
-
             }
             else if (state == Constants.REMOTE_VIDEO_STATE_DECODING || state == Constants.REMOTE_VIDEO_STATE_STARTING){
                 runOnUiThread(() -> setupRemoteVideo(uid));
@@ -133,6 +136,7 @@ public class CallActivity extends AppCompatActivity{
         channelName = intent.getStringExtra("channelName");
         token = intent.getStringExtra("token");
         local_Id = intent.getStringExtra("uid");
+        name = intent.getStringExtra("name");
 
         chat_btn = findViewById(R.id.chat);
         mute_btn = findViewById(R.id.mic);
@@ -142,7 +146,11 @@ public class CallActivity extends AppCompatActivity{
 
         localContainer = findViewById(R.id.localVideo);
         localUser = findViewById(R.id.local_user);
+        localName = findViewById(R.id.localUsername);
+        localName.setText(name);
+
         remoteContainer = findViewById(R.id.remoteVideo);
+        remoteName = findViewById(R.id.remoteUsername);
 
         chat_btn.setOnClickListener(v -> chat_view());
         mute_btn.setOnClickListener(v -> audio_toggle());
@@ -159,7 +167,6 @@ public class CallActivity extends AppCompatActivity{
     private void initializeRtcEngine() {
         try {
             mRtcEngine = RtcEngine.create(getBaseContext(), getString(R.string.agora_app_id), mRtcHandler);
-            mRtcEngine.registerLocalUserAccount(getString(R.string.agora_app_id), local_Id);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -188,15 +195,9 @@ public class CallActivity extends AppCompatActivity{
             Toast.makeText(getApplicationContext(), "No chat channel available", Toast.LENGTH_SHORT).show();
         } else {
             Intent intent = new Intent(CallActivity.this, ConversationActivity.class);
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            db.collection(AppConstants.KEY_COLLECTION).document(remote_Id).get()
-                    .addOnSuccessListener(documentSnapshot -> {
-                        remote_name = documentSnapshot.getString(AppConstants.NAME);
-                        intent.putExtra("name", remote_name);
-                        intent.putExtra("uid", remote_Id);
-                        startActivity(intent);
-                    })
-                    .addOnFailureListener(e -> Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show());
+            intent.putExtra("name", remote_name);
+            intent.putExtra("uid", remote_Id);
+            startActivity(intent);
         }
     }
 
@@ -236,6 +237,14 @@ public class CallActivity extends AppCompatActivity{
         params.width = (int) (50 * scale + 0.5f);
         localUser.setLayoutParams(params);
         localUser.requestLayout();
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection(AppConstants.KEY_COLLECTION).document(remote_Id).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    remote_name = documentSnapshot.getString(AppConstants.NAME);
+                    remoteName.setText(remote_name);
+                })
+                .addOnFailureListener(e -> Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show());
     }
 
     private void remoteUserLeft(){
