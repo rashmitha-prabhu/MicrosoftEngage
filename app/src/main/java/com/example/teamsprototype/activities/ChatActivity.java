@@ -16,6 +16,7 @@ import com.example.teamsprototype.utilities.Preferences;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -83,6 +84,10 @@ public class ChatActivity extends AppCompatActivity {
 
                 case R.id.logout:
                     preferences.clearPreferences();
+                    FirebaseAuth.getInstance().signOut();
+                    FirebaseFirestore.getInstance().collection(AppConstants.KEY_COLLECTION)
+                            .document(preferences.getString(AppConstants.USER_ID))
+                            .update(AppConstants.FCM_TOKEN, null);
                     startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                     finish();
                     overridePendingTransition(0,0);

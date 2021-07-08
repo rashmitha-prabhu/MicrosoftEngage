@@ -57,7 +57,13 @@ public class OutgoingCall extends AppCompatActivity {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful() && task.getResult()!=null){
                     receiver_token = task.getResult().getString(AppConstants.FCM_TOKEN);
-                    initiateMeeting(receiver_token);
+                    if(receiver_token!=null) {
+                        initiateMeeting(receiver_token);
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(), "User unavailable", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
                 } else {
                     Toast.makeText(getApplicationContext(), "User unavailable", Toast.LENGTH_SHORT).show();
                 }

@@ -33,7 +33,6 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
     private List<MeetingModel> meetingList;
     private final CalendarActivity activity;
     private final DatabaseHandler db;
-    private String token;
     Preferences preferences;
 
     public ScheduleAdapter(DatabaseHandler db, CalendarActivity activity){
@@ -131,36 +130,18 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
                 String code = item.getCode();
                 String uid = preferences.getString(AppConstants.USER_ID);
                 String token = Tokens.createToken(code, 0);
+                String name = preferences.getString(AppConstants.NAME);
 
                 if(token!=null) {
                     Intent intent = new Intent(v13.getContext(), CallActivity.class);
                     intent.putExtra("channelName", code);
                     intent.putExtra("token", token);
                     intent.putExtra("uid", uid);
+                    intent.putExtra("name", name);
                     v13.getContext().startActivity(intent);
                 } else {
                     Toast.makeText(v13.getContext(), "Error in creating room. Retry", Toast.LENGTH_SHORT).show();
                 }
-
-//                if(done) {
-//                    FirebaseFirestore fdb = FirebaseFirestore.getInstance();
-//                    fdb.collection(AppConstants.TOKENS).document(code).get()
-//                            .addOnSuccessListener(documentSnapshot -> {
-//                                Toast.makeText(v13.getContext(), "Getting the meeting ready...", Toast.LENGTH_SHORT).show();
-//                                token = documentSnapshot.getString("token");
-//                                Intent intent = new Intent(v13.getContext(), CallActivity.class);
-//                                intent.putExtra("channelName", code);
-//                                intent.putExtra("token", token);
-//                                intent.putExtra("uid", uid);
-//                                v13.getContext().startActivity(intent);
-//                            })
-//                            .addOnFailureListener(e -> {
-//                                token = null;
-//                                Toast.makeText(v13.getContext(), "Retry...", Toast.LENGTH_SHORT).show();
-//                            });
-//                } else {
-//                    Toast.makeText(v13.getContext(), "Error in creating room. Retry", Toast.LENGTH_SHORT).show();
-//                }
             });
         }
     }

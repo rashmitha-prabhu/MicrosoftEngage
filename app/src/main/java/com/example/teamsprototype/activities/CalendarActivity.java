@@ -10,9 +10,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.teamsprototype.R;
 import com.example.teamsprototype.model.MeetingModel;
 import com.example.teamsprototype.adapters.ScheduleAdapter;
+import com.example.teamsprototype.utilities.AppConstants;
 import com.example.teamsprototype.utilities.DatabaseHandler;
 import com.example.teamsprototype.utilities.Preferences;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
 
@@ -75,6 +78,10 @@ public class CalendarActivity extends AppCompatActivity {
 
                 case R.id.logout:
                     preferences.clearPreferences();
+                    FirebaseAuth.getInstance().signOut();
+                    FirebaseFirestore.getInstance().collection(AppConstants.KEY_COLLECTION)
+                            .document(preferences.getString(AppConstants.USER_ID))
+                            .update(AppConstants.FCM_TOKEN, null);
                     startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                     finish();
                     overridePendingTransition(0,0);
