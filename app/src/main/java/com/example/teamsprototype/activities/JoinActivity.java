@@ -10,10 +10,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.teamsprototype.R;
-import com.example.teamsprototype.services.Tokens;
 import com.example.teamsprototype.utilities.AppConstants;
 import com.example.teamsprototype.utilities.Preferences;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;

@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -17,10 +16,7 @@ import com.example.teamsprototype.services.ApiClient;
 import com.example.teamsprototype.services.ApiService;
 import com.example.teamsprototype.utilities.AppConstants;
 import com.example.teamsprototype.utilities.Preferences;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.jetbrains.annotations.NotNull;
@@ -52,23 +48,20 @@ public class OutgoingCall extends AppCompatActivity {
         token = getIntent().getStringExtra("token");
 
         FirebaseFirestore.getInstance().collection(AppConstants.KEY_COLLECTION)
-                .document(receiverUid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful() && task.getResult()!=null){
-                    receiver_token = task.getResult().getString(AppConstants.FCM_TOKEN);
-                    if(receiver_token!=null) {
-                        initiateMeeting(receiver_token);
-                    }
-                    else {
+                .document(receiverUid).get().addOnCompleteListener(task -> {
+                    if(task.isSuccessful() && task.getResult()!=null){
+                        receiver_token = task.getResult().getString(AppConstants.FCM_TOKEN);
+                        if(receiver_token!=null) {
+                            initiateMeeting(receiver_token);
+                        }
+                        else {
+                            Toast.makeText(getApplicationContext(), "User unavailable", Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                    } else {
                         Toast.makeText(getApplicationContext(), "User unavailable", Toast.LENGTH_SHORT).show();
-                        finish();
                     }
-                } else {
-                    Toast.makeText(getApplicationContext(), "User unavailable", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+                });
 
         TextView remote_id = findViewById(R.id.remote_id);
         remote_id.setText(name.substring(0, 1));

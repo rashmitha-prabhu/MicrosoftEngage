@@ -2,7 +2,6 @@ package com.example.teamsprototype.adapters;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +21,6 @@ import com.example.teamsprototype.services.Tokens;
 import com.example.teamsprototype.utilities.AppConstants;
 import com.example.teamsprototype.utilities.DatabaseHandler;
 import com.example.teamsprototype.utilities.Preferences;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -112,12 +110,9 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
                 AlertDialog alert = new AlertDialog.Builder(getContext())
                         .setTitle("Delete Meeting")
                         .setMessage("Are you sure you want to delete?")
-                        .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                int position = getAbsoluteAdapterPosition();
-                                deleteItem(position);
-                            }
+                        .setPositiveButton("Confirm", (dialog, which) -> {
+                            int position = getAbsoluteAdapterPosition();
+                            deleteItem(position);
                         })
                         .setNegativeButton("Cancel", null)
                         .setIcon(R.drawable.alert)

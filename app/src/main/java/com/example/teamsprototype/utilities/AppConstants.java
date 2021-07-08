@@ -1,7 +1,5 @@
 package com.example.teamsprototype.utilities;
 
-import com.example.teamsprototype.R;
-
 import java.util.HashMap;
 
 public class AppConstants {

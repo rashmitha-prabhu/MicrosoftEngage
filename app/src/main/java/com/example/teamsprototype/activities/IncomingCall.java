@@ -1,12 +1,11 @@
 package com.example.teamsprototype.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.teamsprototype.R;
 import com.example.teamsprototype.services.ApiClient;

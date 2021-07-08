@@ -3,26 +3,18 @@ package com.example.teamsprototype.activities;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.teamsprototype.R;
 import com.example.teamsprototype.adapters.UsersAdapter;
-import com.example.teamsprototype.databinding.ActivityChatBinding;
 import com.example.teamsprototype.services.User;
 import com.example.teamsprototype.utilities.AppConstants;
 import com.example.teamsprototype.utilities.Preferences;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -48,22 +40,17 @@ public class ChatActivity extends AppCompatActivity {
         rclView.setAdapter(usersAdapter);
 
         db.collection(AppConstants.KEY_COLLECTION).get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull @NotNull Task<QuerySnapshot> task) {
-                        String uid = preferences.getString(AppConstants.USER_ID);
-                        if(task.isSuccessful() && task.getResult()!= null){
-                            for(QueryDocumentSnapshot doc : task.getResult()){
-                                if(uid.equals(doc.getId())){
-                                    continue;
-                                } else {
-                                    String name = doc.getString(AppConstants.NAME);
-                                    String email = doc.getString(AppConstants.EMAIL);
-                                    String user_id = doc.getString(AppConstants.USER_ID);
-                                    User user = new User(user_id, name, email);
-                                    users.add(user);
-                                    usersAdapter.notifyDataSetChanged();
-                                }
+                .addOnCompleteListener(task -> {
+                    String uid = preferences.getString(AppConstants.USER_ID);
+                    if(task.isSuccessful() && task.getResult()!= null){
+                        for(QueryDocumentSnapshot doc : task.getResult()){
+                            if (!uid.equals(doc.getId())) {
+                                String name = doc.getString(AppConstants.NAME);
+                                String email = doc.getString(AppConstants.EMAIL);
+                                String user_id = doc.getString(AppConstants.USER_ID);
+                                User user = new User(user_id, name, email);
+                                users.add(user);
+                                usersAdapter.notifyDataSetChanged();
                             }
                         }
                     }

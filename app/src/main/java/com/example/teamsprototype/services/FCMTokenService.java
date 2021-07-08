@@ -11,8 +11,6 @@ import com.example.teamsprototype.utilities.AppConstants;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-import org.jetbrains.annotations.NotNull;
-
 public class FCMTokenService extends FirebaseMessagingService {
 
     @Override

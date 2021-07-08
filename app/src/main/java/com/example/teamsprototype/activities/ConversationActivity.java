@@ -1,13 +1,10 @@
 package com.example.teamsprototype.activities;
 
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.telecom.Call;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -29,18 +26,11 @@ import com.example.teamsprototype.adapters.MessageAdapter;
 import com.example.teamsprototype.model.Message;
 import com.example.teamsprototype.services.ChannelNameGenerator;
 import com.example.teamsprototype.services.Tokens;
-import com.example.teamsprototype.utilities.AppConstants;
-import com.example.teamsprototype.utilities.Preferences;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -139,22 +129,15 @@ public class ConversationActivity extends AppCompatActivity {
                     .child(senderRoom)
                     .child("messages")
                     .push()
-                    .setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void unused) {
-                    database.getReference().child("chats")
+                    .setValue(message).addOnSuccessListener(unused -> database.getReference().child("chats")
                             .child(receiverRoom)
                             .child("messages")
                             .push()
-                            .setValue(message);
-                }
-            });
+                            .setValue(message));
         });
 
         back = findViewById(R.id.back);
-        back.setOnClickListener(v -> {
-            finish();
-        });
+        back.setOnClickListener(v -> finish());
 
         storage = FirebaseStorage.getInstance();
         attachment.setOnClickListener(v -> {
@@ -225,16 +208,12 @@ public class ConversationActivity extends AppCompatActivity {
                                                     .child(senderRoom)
                                                     .child("messages")
                                                     .push()
-                                                    .setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void unused) {
-                                                    database.getReference().child("chats")
+                                                    .setValue(message)
+                                                    .addOnSuccessListener(unused -> database.getReference().child("chats")
                                                             .child(receiverRoom)
                                                             .child("messages")
                                                             .push()
-                                                            .setValue(message);
-                                                }
-                                            });
+                                                            .setValue(message));
                                         });
                                     }
                                 });

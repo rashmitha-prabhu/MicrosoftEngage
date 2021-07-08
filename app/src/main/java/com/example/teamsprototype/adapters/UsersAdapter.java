@@ -65,14 +65,15 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UsersViewHol
 
                             @SuppressLint("SimpleDateFormat")
                             SimpleDateFormat format = new SimpleDateFormat("hh.mm");
+                            assert uid != null;
+                            String msg;
                             if(uid.equals(senderId)){
-                                String msg = "You: "+lastMsg;
-                                holder.binding.message.setText(msg);
+                                msg = "You: " + lastMsg;
                             }
                             else {
-                                String msg = user.getName()+": " + lastMsg;
-                                holder.binding.message.setText(msg);
+                                msg = user.getName() + ": " + lastMsg;
                             }
+                            holder.binding.message.setText(msg);
                             holder.binding.msgTime.setText(format.format(new Date(time)));
                         }
                     }
@@ -83,14 +84,11 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UsersViewHol
                     }
                 });
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, ConversationActivity.class);
-                intent.putExtra("name", user.getName());
-                intent.putExtra("uid", user.getUid());
-                context.startActivity(intent);
-            }
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, ConversationActivity.class);
+            intent.putExtra("name", user.getName());
+            intent.putExtra("uid", user.getUid());
+            context.startActivity(intent);
         });
     }
 
