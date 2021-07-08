@@ -1,7 +1,6 @@
 package com.example.teamsprototype.model;
 
 public class Message {
-    private String messageId;
     private String message;
     private String sender_id;
     private String imageUrl;

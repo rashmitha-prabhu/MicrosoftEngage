@@ -166,10 +166,7 @@ public class OutgoingCall extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call<String> call, @NotNull Response<String> response) {
                 if(response.isSuccessful()){
-                    if(type.equals(AppConstants.INVITE)) {
-                        Toast.makeText(OutgoingCall.this, "Invite Sent", Toast.LENGTH_SHORT).show();
-                    } else if (type.equals(AppConstants.REMOTE_MSG_RESPONSE)) {
-                        Toast.makeText(OutgoingCall.this, "Invite Cancelled", Toast.LENGTH_SHORT).show();
+                    if (type.equals(AppConstants.REMOTE_MSG_RESPONSE)) {
                         finish();
                     }
                 } else {

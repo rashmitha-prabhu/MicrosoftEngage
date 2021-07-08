@@ -1,11 +1,15 @@
 package com.example.teamsprototype.activities;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.teamsprototype.R;
 import com.example.teamsprototype.services.ApiClient;
@@ -90,6 +94,33 @@ public class IncomingCall extends AppCompatActivity {
             Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             finish();
         }
+    }
+
+    private final BroadcastReceiver responseReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String type = intent.getStringExtra(AppConstants.REMOTE_MSG_RESPONSE);
+            if(type.equals(AppConstants.CANCEL)){
+                    finish();
+            }
+        }
+    };
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(
+                responseReceiver,
+                new IntentFilter(AppConstants.REMOTE_MSG_RESPONSE)
+        );
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(
+                responseReceiver
+        );
     }
 
     private void sendRemoteMessage(String remoteMessageBody, String type){

@@ -19,7 +19,6 @@ import java.util.concurrent.CountDownLatch;
 import static android.content.ContentValues.TAG;
 
 public class Tokens{
-    static boolean success = false;
     static String token = null;
 
     public static String createToken(String channelName, int uid) {
@@ -56,7 +55,6 @@ public class Tokens{
                                 .set(token_instance)
                                 .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
                                 .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
-                        success = true;
                         countDownLatch.countDown();
                     } catch (JSONException e) {
                         e.printStackTrace();
