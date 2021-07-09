@@ -12,6 +12,7 @@ import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
 
+//    Startup activity which renders logo on screen 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

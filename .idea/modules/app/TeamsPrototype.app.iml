@@ -174,7 +174,6 @@
     <orderEntry type="library" name="Gradle: androidx.annotation:annotation-experimental:1.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.firebase:protolite-well-known-types:18.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: io.grpc:grpc-android:1.28.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: io.agora.rtc:full-sdk:3.3.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: com.github.agorabuilder:rtm-sdk:1.4.6@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.github.agorabuilder:native-full-sdk:3.4.5@aar" level="project" />
   </component>
 </module>

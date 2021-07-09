@@ -81,15 +81,18 @@ public class ConversationActivity extends AppCompatActivity {
         p_name = findViewById(R.id.p_name);
         p_name.setText(name.substring(0,1));
 
-        messages = new ArrayList<>();
-        adapter = new MessageAdapter(this, messages);
-        chat_view.setLayoutManager(new LinearLayoutManager(this));
-        chat_view.setAdapter(adapter);
         senderUid = FirebaseAuth.getInstance().getUid();
 
+//        Create unique nodes in the database based on UID of the communicating users
         senderRoom = senderUid + receiverUid;
         receiverRoom = receiverUid + senderUid;
 
+        messages = new ArrayList<>();
+        adapter = new MessageAdapter(this, messages, senderRoom);
+        chat_view.setLayoutManager(new LinearLayoutManager(this));
+        chat_view.setAdapter(adapter);
+
+//        Display previously sent messages on screen
         database = FirebaseDatabase.getInstance();
         database.getReference().child("chats")
                 .child(senderRoom)
@@ -100,6 +103,7 @@ public class ConversationActivity extends AppCompatActivity {
                         messages.clear();
                         for(DataSnapshot snapshot1 : snapshot.getChildren()){
                             Message message = snapshot1.getValue(Message.class);
+                            message.setMessageId(snapshot1.getKey());
                             messages.add(message);
                         }
                         adapter.notifyDataSetChanged();
@@ -107,10 +111,10 @@ public class ConversationActivity extends AppCompatActivity {
 
                     @Override
                     public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
                     }
                 });
 
+//        Add new message to the database and render it on screen
         send.setOnClickListener(v -> {
             String msgTxt = msg_box.getText().toString();
             Date date = new Date();
@@ -139,6 +143,7 @@ public class ConversationActivity extends AppCompatActivity {
         back = findViewById(R.id.back);
         back.setOnClickListener(v -> finish());
 
+//        Storage for image messages
         storage = FirebaseStorage.getInstance();
         attachment.setOnClickListener(v -> {
             Intent intent = new Intent();
@@ -147,6 +152,7 @@ public class ConversationActivity extends AppCompatActivity {
             launcher.launch(intent);
         });
 
+//        Start video call from chat
         start_call =  findViewById(R.id.start_call);
         if(getIntent().getStringExtra("prevAct").equals("call")){
             start_call.setVisibility(View.INVISIBLE);
@@ -175,6 +181,7 @@ public class ConversationActivity extends AppCompatActivity {
         }
     }
 
+//    Stores images sent into the remote storage and renders them on screen
     ActivityResultLauncher<Intent> launcher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {

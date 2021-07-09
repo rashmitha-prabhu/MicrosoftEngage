@@ -1,9 +1,9 @@
 package com.example.teamsprototype.model;
 
+import com.google.firebase.database.DataSnapshot;
+
 public class Message {
-    private String message;
-    private String sender_id;
-    private String imageUrl;
+    private String message, sender_id, imageUrl, messageId;
     private long time;
 
     public Message() {
@@ -41,5 +41,13 @@ public class Message {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getMessageId() {
+        return messageId;
+    }
+
+    public void setMessageId(String messageId) {
+        this.messageId = messageId;
     }
 }

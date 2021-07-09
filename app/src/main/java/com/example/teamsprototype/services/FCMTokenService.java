@@ -1,7 +1,6 @@
 package com.example.teamsprototype.services;
 
 import android.content.Intent;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -16,7 +15,6 @@ public class FCMTokenService extends FirebaseMessagingService {
     @Override
     public void onNewToken(@NonNull String s) {
         super.onNewToken(s);
-        Log.d("FCM: ", s);
     }
 
     @Override
@@ -40,7 +38,8 @@ public class FCMTokenService extends FirebaseMessagingService {
                 intent.putExtra(AppConstants.REMOTE_MSG_INVITER_TOKEN, inviter_token);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
-            } else if (type.equals(AppConstants.REMOTE_MSG_RESPONSE)){
+            }
+            else if (type.equals(AppConstants.REMOTE_MSG_RESPONSE)){
                 String response = remoteMessage.getData().get(AppConstants.REMOTE_MSG_RESPONSE);
                 intent = new Intent(AppConstants.REMOTE_MSG_RESPONSE);
                 intent.putExtra(AppConstants.REMOTE_MSG_RESPONSE, response);

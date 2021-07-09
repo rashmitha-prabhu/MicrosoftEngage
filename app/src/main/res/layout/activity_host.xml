@@ -8,7 +8,6 @@
     tools:context=".activities.HostActivity">
 
     <LinearLayout
-        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
@@ -157,17 +156,6 @@
                     android:text="Meet Now"
                     android:textColor="@color/white" />
 
-                <ProgressBar
-                    android:id="@+id/meetProgress"
-                    style="?android:attr/progressBarStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:indeterminateTint="#4CAF50"
-                    android:progressBackgroundTint="#4CAF50"
-                    android:progressTint="#4CAF50"
-                    android:secondaryProgressTint="#8BC34A" />
-
             </TableRow>
 
             <TableRow
@@ -184,17 +172,6 @@
                     android:fontFamily="monospace"
                     android:text="SCHEDULE MEET"
                     android:textColor="@color/white" />
-
-                <ProgressBar
-                    android:id="@+id/scheduleProgress"
-                    style="?android:attr/progressBarStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:indeterminateTint="@color/purple_700"
-                    android:progressBackgroundTint="@color/purple_700"
-                    android:progressTint="@color/purple_500"
-                    android:secondaryProgressTint="@color/purple_200" />
 
             </TableRow>
         </TableRow>

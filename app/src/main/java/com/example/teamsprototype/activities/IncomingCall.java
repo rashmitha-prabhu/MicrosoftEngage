@@ -57,6 +57,7 @@ public class IncomingCall extends AppCompatActivity {
         acceptCall = findViewById(R.id.accept_call);
         rejectCall = findViewById(R.id.reject_call);
 
+//        Starts and joins the meeting if invitation is accepted
         acceptCall.setOnClickListener(v -> {
             sendInvitationResponse(caller_token, AppConstants.ACCEPT);
             Intent intent = new Intent(getBaseContext(), CallActivity.class);
@@ -68,12 +69,14 @@ public class IncomingCall extends AppCompatActivity {
             finish();
         });
 
+//        Reject the meeting invitation
         rejectCall.setOnClickListener(v -> {
             sendInvitationResponse(caller_token, AppConstants.REJECT);
             finish();
         });
     }
 
+//    Sends the accept/reject response back to the caller
     private void sendInvitationResponse(String receiverToken, String type){
         try{
             JSONArray tokens = new JSONArray();
@@ -96,6 +99,7 @@ public class IncomingCall extends AppCompatActivity {
         }
     }
 
+//    Listener to check if the caller cancels the meet
     private final BroadcastReceiver responseReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -123,6 +127,7 @@ public class IncomingCall extends AppCompatActivity {
         );
     }
 
+//    Send response to caller via FCM
     private void sendRemoteMessage(String remoteMessageBody, String type){
         ApiClient.getClient().create(ApiService.class).sendRemoteMessage(
                 AppConstants.getRemoteMessageHeaders(), remoteMessageBody
@@ -148,4 +153,8 @@ public class IncomingCall extends AppCompatActivity {
             }
         });
     }
+
+//    Prevent back press when on calling screen
+    @Override
+    public void onBackPressed(){}
 }

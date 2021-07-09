@@ -1,10 +1,10 @@
 package com.example.teamsprototype.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,36 +16,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 public class DashboardActivity extends AppCompatActivity{
 
     Button join, host;
     TextView greet;
     Preferences preferences;
     String msg;
-    boolean doubleBackToExitPressedOnce = false;
-    private BottomNavigationView bottomNav;
 
-    @Override
-    public void onBackPressed() {
-        if (doubleBackToExitPressedOnce) {
-            super.onBackPressed();
-            return;
-        }
-
-        this.doubleBackToExitPressedOnce = true;
-        Toast.makeText(this, "Click BACK again to exit", Toast.LENGTH_SHORT).show();
-
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                doubleBackToExitPressedOnce=false;
-            }
-        }, 1000);
-    }
-
+    @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,7 +47,8 @@ public class DashboardActivity extends AppCompatActivity{
         join.setOnClickListener(v -> startActivity(new Intent(DashboardActivity.this, JoinActivity.class)));
         host.setOnClickListener(v -> startActivity(new Intent(DashboardActivity.this, HostActivity.class)));
 
-        bottomNav = findViewById(R.id.bottomNav);
+//        Bottom navigation Bar
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
         bottomNav.setSelectedItemId(R.id.dashboard);
         bottomNav.setOnItemSelectedListener(item -> {
             switch (item.getItemId()){
@@ -79,6 +58,7 @@ public class DashboardActivity extends AppCompatActivity{
                 case R.id.chatActivity:
                     startActivity(new Intent(getApplicationContext(), ChatActivity.class));
                     overridePendingTransition(0,0);
+                    finish();
                     return true;
 
                 case R.id.logout:
@@ -93,14 +73,16 @@ public class DashboardActivity extends AppCompatActivity{
                     return true;
 
                 case R.id.schedule:
-                    startActivity(new Intent(getApplicationContext(), CalendarActivity.class));
+                    startActivity(new Intent(getApplicationContext(), ScheduleActivity.class));
                     overridePendingTransition(0,0);
+                    finish();
                     return true;
             }
             return false;
         });
     }
 
+//    Update Firebase with the FCM token
     private void sendFCMToken(String token){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         preferences.putString(AppConstants.FCM_TOKEN, token);

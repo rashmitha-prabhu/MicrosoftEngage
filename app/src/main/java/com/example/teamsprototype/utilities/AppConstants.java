@@ -3,6 +3,8 @@ package com.example.teamsprototype.utilities;
 import java.util.HashMap;
 
 public class AppConstants {
+//    Constants used throughout the app
+
     public static final String KEY_COLLECTION = "Users";
     public static final String NAME = "name";
     public static final String EMAIL = "email";

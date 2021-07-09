@@ -51,6 +51,7 @@ public class LoginActivity extends AppCompatActivity{
         signUp = findViewById(R.id.signUp);
         showPass = findViewById(R.id.showLogPass);
 
+//        Login with valid credentials
         login.setOnClickListener(v -> {
             email = emailTxt.getText().toString();
             password = passwordTxt.getText().toString();
@@ -71,6 +72,7 @@ public class LoginActivity extends AppCompatActivity{
             }
         });
 
+//        Switch to create new account
         signUp.setOnClickListener(v -> {
             Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
             startActivity(intent);
@@ -89,6 +91,7 @@ public class LoginActivity extends AppCompatActivity{
         });
     }
 
+//    Update Shared Preferences upon successful login
     private void login() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection(AppConstants.KEY_COLLECTION)

@@ -3,6 +3,7 @@ package com.example.teamsprototype.adapters;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,26 +15,32 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.teamsprototype.R;
-import com.example.teamsprototype.activities.CalendarActivity;
 import com.example.teamsprototype.activities.CallActivity;
+import com.example.teamsprototype.activities.HostActivity;
+import com.example.teamsprototype.activities.ScheduleActivity;
 import com.example.teamsprototype.model.MeetingModel;
 import com.example.teamsprototype.services.Tokens;
 import com.example.teamsprototype.utilities.AppConstants;
 import com.example.teamsprototype.utilities.DatabaseHandler;
 import com.example.teamsprototype.utilities.Preferences;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.List;
 
+import static android.content.ContentValues.TAG;
+
 public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHolder> {
+//    Adapter for scheduled meetings
 
     private List<MeetingModel> meetingList;
-    private final CalendarActivity activity;
+    private final ScheduleActivity activity;
     private final DatabaseHandler db;
     Preferences preferences;
 
-    public ScheduleAdapter(DatabaseHandler db, CalendarActivity activity){
+    public ScheduleAdapter(DatabaseHandler db, ScheduleActivity activity){
         this.db = db;
         this.activity = activity;
         this.preferences = new Preferences(activity.getApplicationContext());
@@ -127,6 +134,16 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
                 String token = Tokens.createToken(code, 0);
                 String name = preferences.getString(AppConstants.NAME);
 
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                HashMap<String, Object> token_instance = new HashMap<>();
+                token_instance.put("token", token);
+
+                db.collection(AppConstants.TOKENS)
+                        .document(code)
+                        .set(token_instance)
+                        .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
+                        .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
+
                 if(token!=null) {
                     Intent intent = new Intent(v13.getContext(), CallActivity.class);
                     intent.putExtra("channelName", code);
@@ -135,7 +152,12 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
                     intent.putExtra("name", name);
                     v13.getContext().startActivity(intent);
                 } else {
-                    Toast.makeText(v13.getContext(), "Error in creating room. Retry", Toast.LENGTH_SHORT).show();
+                    AlertDialog alert = new AlertDialog.Builder(getContext())
+                            .setTitle("Unable to create meeting")
+                            .setMessage("Make sure you are connected to the internet and retry")
+                            .setPositiveButton("Dismiss", null)
+                            .setIcon(R.drawable.alert)
+                            .show();
                 }
             });
         }

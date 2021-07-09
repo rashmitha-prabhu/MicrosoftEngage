@@ -1,35 +1,45 @@
 package com.example.teamsprototype.adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.teamsprototype.R;
+import com.example.teamsprototype.activities.FullscreenActivity;
 import com.example.teamsprototype.databinding.ItemReceiveBinding;
 import com.example.teamsprototype.databinding.ItemSendBinding;
 import com.example.teamsprototype.model.Message;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
 public class MessageAdapter extends RecyclerView.Adapter {
+//    Adapter for chats
 
     Context context;
     ArrayList<Message> messages;
+    String senderRoom;
 
     final int ITEM_SENT = 1;
     final int ITEM_RECEIVED = 2;
 
-    public MessageAdapter(Context context, ArrayList<Message> messages){
+    public MessageAdapter(Context context, ArrayList<Message> messages, String senderRoom){
         this.context = context;
         this.messages = messages;
+        this.senderRoom = senderRoom;
     }
 
     @NonNull
@@ -64,9 +74,16 @@ public class MessageAdapter extends RecyclerView.Adapter {
                         .placeholder(R.drawable.image)
                         .into(viewHolder.binding.image);
             }
-            viewHolder.binding.localMsg.setText(message.getMessage());
 
-        } else {
+            viewHolder.binding.localMsg.setText(message.getMessage());
+            viewHolder.binding.image.setOnClickListener(v -> {
+                Intent intent = new Intent(context, FullscreenActivity.class);
+                intent.putExtra("path", message.getImageUrl());
+                context.startActivity(intent);
+            });
+        }
+
+        else {
             ReceiveViewHolder viewHolder = (ReceiveViewHolder) holder;
             if(message.getMessage().equals("Photo")){
                 viewHolder.binding.image.setVisibility(View.VISIBLE);
@@ -76,6 +93,11 @@ public class MessageAdapter extends RecyclerView.Adapter {
                         .into(viewHolder.binding.image);
             }
             viewHolder.binding.remoteMsg.setText(message.getMessage());
+            viewHolder.binding.image.setOnClickListener(v -> {
+                Intent intent = new Intent(context, FullscreenActivity.class);
+                intent.putExtra("path", message.getImageUrl());
+                context.startActivity(intent);
+            });
         }
     }
 
@@ -101,5 +123,4 @@ public class MessageAdapter extends RecyclerView.Adapter {
             this.binding = ItemReceiveBinding.bind(itemView);
         }
     }
-
 }

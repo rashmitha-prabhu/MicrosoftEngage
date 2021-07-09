@@ -18,11 +18,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TeamsPrototype"
         android:usesCleartextTraffic="true">
+        <activity android:name=".activities.FullscreenActivity" />
         <activity android:name=".activities.OutgoingCall" />
         <activity android:name=".activities.IncomingCall" />
         <activity android:name=".activities.ConversationActivity" />
         <activity android:name=".activities.ChatActivity" />
-        <activity android:name=".activities.CalendarActivity" />
+        <activity android:name=".activities.ScheduleActivity" />
 
         <uses-library
             android:name="org.apache.http.legacy"
@@ -37,6 +38,7 @@
         <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

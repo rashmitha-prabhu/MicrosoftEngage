@@ -47,6 +47,7 @@ public class OutgoingCall extends AppCompatActivity {
         channelName = getIntent().getStringExtra("channelName");
         token = getIntent().getStringExtra("token");
 
+//        Send call invitation if user available
         FirebaseFirestore.getInstance().collection(AppConstants.KEY_COLLECTION)
                 .document(receiverUid).get().addOnCompleteListener(task -> {
                     if(task.isSuccessful() && task.getResult()!=null){
@@ -60,6 +61,7 @@ public class OutgoingCall extends AppCompatActivity {
                         }
                     } else {
                         Toast.makeText(getApplicationContext(), "User unavailable", Toast.LENGTH_SHORT).show();
+                        finish();
                     }
                 });
 
@@ -119,6 +121,7 @@ public class OutgoingCall extends AppCompatActivity {
         }
     }
 
+//    Listener for remote user action - If invite was accepted / rejected
     private final BroadcastReceiver responseReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -159,6 +162,7 @@ public class OutgoingCall extends AppCompatActivity {
         );
     }
 
+//    Send invite via FCM
     private void sendRemoteMessage(String remoteMessageBody, String type){
         ApiClient.getClient().create(ApiService.class).sendRemoteMessage(
                 AppConstants.getRemoteMessageHeaders(), remoteMessageBody
@@ -182,4 +186,8 @@ public class OutgoingCall extends AppCompatActivity {
             }
         });
     }
+
+//    Prevent back press when on calling screen
+    @Override
+    public void onBackPressed(){}
 }

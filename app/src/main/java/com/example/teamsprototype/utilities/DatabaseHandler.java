@@ -13,6 +13,8 @@ import java.util.List;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
+//    Creates and manages the local SQLite Database used for the meeting scheduler
+
     private static final int VERSION = 1;
     private static final String NAME = "meetingDatabase";
     private static final String TABLE = "meeting";

@@ -15,7 +15,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.teamsprototype.R;
-import com.example.teamsprototype.services.User;
+import com.example.teamsprototype.model.User;
 import com.example.teamsprototype.utilities.AppConstants;
 import com.example.teamsprototype.utilities.Preferences;
 import com.google.firebase.auth.FirebaseAuth;
@@ -137,6 +137,7 @@ public class SignupActivity extends AppCompatActivity{
         return success;
     }
 
+//    Update Firestore database and Shared preferences upon successful account creation
     private void signUp() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 

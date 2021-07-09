@@ -1,5 +1,6 @@
 package com.example.teamsprototype.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -8,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.teamsprototype.R;
 import com.example.teamsprototype.adapters.UsersAdapter;
-import com.example.teamsprototype.services.User;
+import com.example.teamsprototype.model.User;
 import com.example.teamsprototype.utilities.AppConstants;
 import com.example.teamsprototype.utilities.Preferences;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -27,6 +28,7 @@ public class ChatActivity extends AppCompatActivity {
     BottomNavigationView bottomNav;
     RecyclerView rclView;
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +41,7 @@ public class ChatActivity extends AppCompatActivity {
         rclView = findViewById(R.id.recyclerView);
         rclView.setAdapter(usersAdapter);
 
+//        Display all users of the app except the local user
         db.collection(AppConstants.KEY_COLLECTION).get()
                 .addOnCompleteListener(task -> {
                     String uid = preferences.getString(AppConstants.USER_ID);
@@ -56,6 +59,7 @@ public class ChatActivity extends AppCompatActivity {
                     }
                 });
 
+//        Bottom Navigation Bar
         bottomNav = findViewById(R.id.bottomNav);
         bottomNav.setSelectedItemId(R.id.chatActivity);
         bottomNav.setOnItemSelectedListener(item -> {
@@ -70,25 +74,23 @@ public class ChatActivity extends AppCompatActivity {
                     break;
 
                 case R.id.logout:
-                    preferences.clearPreferences();
                     FirebaseAuth.getInstance().signOut();
                     FirebaseFirestore.getInstance().collection(AppConstants.KEY_COLLECTION)
                             .document(preferences.getString(AppConstants.USER_ID))
                             .update(AppConstants.FCM_TOKEN, null);
+                    preferences.clearPreferences();
                     startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                     finish();
                     overridePendingTransition(0,0);
                     return true;
 
                 case R.id.schedule:
-                    startActivity(new Intent(getApplicationContext(), CalendarActivity.class));
+                    startActivity(new Intent(getApplicationContext(), ScheduleActivity.class));
                     finish();
                     overridePendingTransition(0,0);
                     return true;
             }
             return false;
         });
-
     }
-
 }

@@ -13,6 +13,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 
@@ -22,6 +24,8 @@ public class Tokens{
     static String token = null;
 
     public static String createToken(String channelName, int uid) {
+//        Generates the agora user token from the web service deployed on azure and returns the token
+        
         String url = "https://agoratokens.azurewebsites.net/access_token?channelName=" + channelName + "&uid=" + uid;
 
         OkHttpClient client = new OkHttpClient();
@@ -46,15 +50,6 @@ public class Tokens{
                         JSONObject object = new JSONObject(t);
                         token = object.getString("token");
                         Log.d("Tokens", token);
-                        FirebaseFirestore db = FirebaseFirestore.getInstance();
-                        HashMap<String, Object> token_instance = new HashMap<>();
-                        token_instance.put("token", token);
-
-                        db.collection(AppConstants.TOKENS)
-                                .document(channelName)
-                                .set(token_instance)
-                                .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
-                                .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
                         countDownLatch.countDown();
                     } catch (JSONException e) {
                         e.printStackTrace();

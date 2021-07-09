@@ -45,27 +45,34 @@ public class CallActivity extends AppCompatActivity{
     boolean cam = false;
     boolean end_call = false;
 
+//    Agora class - Handles callbacks to the application
     private final IRtcEngineEventHandler mRtcHandler = new IRtcEngineEventHandler() {
+
+//        Triggered when local user joins the channel
         @Override
         public void onJoinChannelSuccess(String channel, final int uid, int elapsed) {
             super.onJoinChannelSuccess(channel, uid, elapsed);
         }
 
+//        Triggered when local user registers a user account
         @Override
         public void onLocalUserRegistered(int uid, String userAccount) {
             super.onLocalUserRegistered(uid, userAccount);
         }
 
+//        Triggered when local user rejoins after being disconnected due to network troubles
         @Override
         public void onRejoinChannelSuccess(String channel, final int uid, int elapsed){
             super.onRejoinChannelSuccess(channel, uid, elapsed);
         }
 
+//        Triggered when remote user joins
         @Override
         public void onUserJoined(final int uid, int elapsed){
             super.onUserJoined(uid, elapsed);
         }
 
+//        Triggered when SDK gets the user id and account of remote user
         @Override
         public void onUserInfoUpdated(int uid, UserInfo userInfo) {
             super.onUserInfoUpdated(uid, userInfo);
@@ -75,6 +82,7 @@ public class CallActivity extends AppCompatActivity{
             });
         }
 
+//        Triggered when remote user leaves the channel
         @Override
         public void onUserOffline(final int uid, int reason) {
             super.onUserOffline(uid, reason);
@@ -84,6 +92,7 @@ public class CallActivity extends AppCompatActivity{
             });
         }
 
+//        Triggered when remote user changes the video state - on/off
         @Override
         public void onRemoteVideoStateChanged(final int uid, int state, int reason, int elapsed) {
             super.onRemoteVideoStateChanged(uid, state, reason, elapsed);
@@ -95,14 +104,10 @@ public class CallActivity extends AppCompatActivity{
                 runOnUiThread(() -> setupRemoteVideo(uid));
             }
         }
-
-        @Override
-        public void onTokenPrivilegeWillExpire(String token){
-            super.onTokenPrivilegeWillExpire(token);
-            mRtcEngine.renewToken(token);
-        }
     };
 
+
+//    Method to ask app permissions required during the call
     private void getAllPermissions() {
         String[] requiredPermissions = new String[]{
                 Manifest.permission.RECORD_AUDIO,
@@ -156,6 +161,7 @@ public class CallActivity extends AppCompatActivity{
         joinChannel();
     }
 
+//    Create RtcEngine instance
     private void initializeRtcEngine() {
         try {
             mRtcEngine = RtcEngine.create(getBaseContext(), getString(R.string.agora_app_id), mRtcHandler);
@@ -164,6 +170,7 @@ public class CallActivity extends AppCompatActivity{
         }
     }
 
+//    Sets video encoder configuration - Video parameters
     private void setVideoConfig(){
         mRtcEngine.setVideoEncoderConfiguration(new VideoEncoderConfiguration(
                 VideoEncoderConfiguration.VD_640x360,
@@ -174,6 +181,7 @@ public class CallActivity extends AppCompatActivity{
         mRtcEngine.setDefaultAudioRoutetoSpeakerphone(true);
     }
 
+//    Allows local user to join the channel with audio and video on mute
     private void joinChannel() {
         mRtcEngine.enableVideo();
         mRtcEngine.enableLocalVideo(false);
@@ -182,6 +190,7 @@ public class CallActivity extends AppCompatActivity{
         mRtcEngine.joinChannelWithUserAccount(token, channelName, local_Id);
     }
 
+//    Chat while in the call
     private void chat_view() {
         if(remote_Id == null){
             Toast.makeText(getApplicationContext(), "No chat channel available", Toast.LENGTH_SHORT).show();
@@ -194,6 +203,7 @@ public class CallActivity extends AppCompatActivity{
         }
     }
 
+//    Mute/unmute the audio
     private void audio_toggle() {
         mute = !mute;
         if(mute){
@@ -206,6 +216,7 @@ public class CallActivity extends AppCompatActivity{
         mRtcEngine.muteLocalAudioStream(mute);
     }
 
+//    Enable/disable video
     private void video_toggle() {
         cam = !cam;
         if(cam){
@@ -218,6 +229,7 @@ public class CallActivity extends AppCompatActivity{
         mRtcEngine.muteLocalVideoStream(!cam);
     }
 
+//    Method called when remote user joins the call. Resizes the layouts
     private void remoteUserJoined() {
         final float scale = getApplicationContext().getResources().getDisplayMetrics().density;
         ViewGroup.LayoutParams params = localContainer.getLayoutParams();
@@ -240,6 +252,7 @@ public class CallActivity extends AppCompatActivity{
                 .addOnFailureListener(e -> Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show());
     }
 
+//    Method called when remote user leaves the call. Resizes the layouts
     private void remoteUserLeft(){
         final float scale = getApplicationContext().getResources().getDisplayMetrics().density;
         ViewGroup.LayoutParams params = localContainer.getLayoutParams();
@@ -254,6 +267,7 @@ public class CallActivity extends AppCompatActivity{
         localUser.requestLayout();
     }
 
+//    Captures and renders local video to screen
     private void setupLocalVideo() {
         mRtcEngine.enableLocalVideo(true);
         localView = RtcEngine.CreateRendererView(getBaseContext());
@@ -264,6 +278,7 @@ public class CallActivity extends AppCompatActivity{
         mRtcEngine.setupLocalVideo(canvas);
     }
 
+//    Disables local video capture and removes the video from screen
     private void removeLocalVideo() {
         mRtcEngine.enableLocalVideo(false);
         if(localView!=null){
@@ -272,6 +287,7 @@ public class CallActivity extends AppCompatActivity{
         localView = null;
     }
 
+//    Sets up the video view of remote user when remote video state changes (Listeners in IRtc Engine)
     private void setupRemoteVideo(int uid) {
         int count = remoteContainer.getChildCount();
         View view = null;
@@ -292,6 +308,7 @@ public class CallActivity extends AppCompatActivity{
         mRtcEngine.setRemoteSubscribeFallbackOption(Constants.STREAM_FALLBACK_OPTION_AUDIO_ONLY);
     }
 
+//    Removes the video view of remote user when remote video state changes (Listeners in IRtc Engine)
     private void removeRemoteVideo() {
         if(remoteView!=null){
             remoteContainer.removeView(remoteView);
@@ -299,6 +316,7 @@ public class CallActivity extends AppCompatActivity{
         remoteView = null;
     }
 
+//    Local user leaves the channel on endCall button press
     private void endCall() {
         end_call = !end_call;
         removeLocalVideo();
@@ -311,6 +329,7 @@ public class CallActivity extends AppCompatActivity{
         mRtcEngine.leaveChannel();
     }
 
+//    Channel is destroyed when local user leaves by back-press or closing the app altogether
     protected void onDestroy(){
         super.onDestroy();
         if(!end_call){

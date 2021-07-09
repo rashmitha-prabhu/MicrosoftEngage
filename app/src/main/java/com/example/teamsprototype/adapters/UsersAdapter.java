@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.teamsprototype.R;
 import com.example.teamsprototype.activities.ConversationActivity;
 import com.example.teamsprototype.databinding.RowConversationBinding;
-import com.example.teamsprototype.services.User;
+import com.example.teamsprototype.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UsersViewHolder>{
+//    Adapter for displaying user list
 
     Context context;
     ArrayList<User> users;
@@ -64,7 +65,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UsersViewHol
                             String uid = snapshot.child("userId").getValue(String.class);
 
                             @SuppressLint("SimpleDateFormat")
-                            SimpleDateFormat format = new SimpleDateFormat("hh.mm");
+                            SimpleDateFormat format = new SimpleDateFormat("hh:mm a");
                             assert uid != null;
                             String msg;
                             if(uid.equals(senderId)){
@@ -98,7 +99,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UsersViewHol
         return users.size();
     }
 
-    public class UsersViewHolder extends RecyclerView.ViewHolder{
+    public static class UsersViewHolder extends RecyclerView.ViewHolder{
         RowConversationBinding binding;
 
         public UsersViewHolder(@NonNull @NotNull View itemView) {

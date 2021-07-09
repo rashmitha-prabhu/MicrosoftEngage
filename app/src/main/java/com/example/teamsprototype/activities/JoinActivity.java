@@ -33,6 +33,7 @@ public class JoinActivity extends AppCompatActivity {
         code = findViewById(R.id.joinCode);
         join = findViewById(R.id.joinBtn);
 
+//        Joins the channel for the video call
         join.setOnClickListener(v -> {
             room = code.getText().toString();
             if (room.trim().isEmpty()) {
