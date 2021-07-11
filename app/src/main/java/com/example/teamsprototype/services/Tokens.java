@@ -2,8 +2,6 @@ package com.example.teamsprototype.services;
 
 import android.util.Log;
 
-import com.example.teamsprototype.utilities.AppConstants;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -13,12 +11,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
-
-import static android.content.ContentValues.TAG;
+import java.util.concurrent.TimeUnit;
 
 public class Tokens{
     static String token = null;
@@ -59,7 +53,7 @@ public class Tokens{
         });
 
         try {
-            countDownLatch.await();
+            countDownLatch.await(5000, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

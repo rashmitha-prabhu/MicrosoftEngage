@@ -50,7 +50,7 @@
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="10dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -75,7 +75,7 @@
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="10dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -100,7 +100,7 @@
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="10dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -135,21 +135,21 @@
                 android:id="@+id/share_meeting"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="10dp"
+                android:background="?selectableItemBackground"
                 android:clickable="true"
                 app:srcCompat="@drawable/share"
-                app:tint="@color/purple_700"
-                android:background="?selectableItemBackground"/>
+                app:tint="@color/purple_700" />
 
             <ImageView
                 android:id="@+id/start_meeting"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="10dp"
+                android:background="?selectableItemBackground"
                 android:clickable="true"
                 app:srcCompat="@drawable/video_on"
-                app:tint="#4CAF50"
-                android:background="?selectableItemBackground" />
+                app:tint="#4CAF50" />
 
             <ImageView
                 android:id="@+id/delete_meeting"

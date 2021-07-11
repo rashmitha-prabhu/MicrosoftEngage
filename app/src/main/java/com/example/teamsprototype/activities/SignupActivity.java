@@ -15,11 +15,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.teamsprototype.R;
-import com.example.teamsprototype.model.User;
 import com.example.teamsprototype.utilities.AppConstants;
 import com.example.teamsprototype.utilities.Preferences;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
 
 public class SignupActivity extends AppCompatActivity{
     FirebaseAuth auth;
@@ -142,7 +143,15 @@ public class SignupActivity extends AppCompatActivity{
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         String uid = auth.getUid();
-        User user = new User(uid, name, email, password);
+        name = username.getText().toString();
+        email = emailTxt.getText().toString();
+        password = passwordTxt.getText().toString();
+
+        HashMap<String, String> user = new HashMap<>();
+        user.put(AppConstants.NAME, name);
+        user.put(AppConstants.USER_ID, uid);
+        user.put(AppConstants.EMAIL, email);
+        user.put(AppConstants.PASSWORD, password);
 
         assert uid != null;
         db.collection(AppConstants.KEY_COLLECTION).document(uid).set(user)

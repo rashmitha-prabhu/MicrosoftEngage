@@ -39,7 +39,7 @@ public class CallActivity extends AppCompatActivity{
     TextView localName, remoteName;
     SurfaceView localView, remoteView;
     FloatingActionButton mute_btn, video_btn, end_call_btn, switchCam_btn, chat_btn;
-    String channelName, token, local_Id, remote_Id, remote_name, name;
+    String channelName, token, local_Id, remote_Id, remote_name, name, email;
 
     boolean mute = true;
     boolean cam = false;
@@ -105,7 +105,6 @@ public class CallActivity extends AppCompatActivity{
             }
         }
     };
-
 
 //    Method to ask app permissions required during the call
     private void getAllPermissions() {
@@ -198,6 +197,7 @@ public class CallActivity extends AppCompatActivity{
             Intent intent = new Intent(CallActivity.this, ConversationActivity.class);
             intent.putExtra("name", remote_name);
             intent.putExtra("uid", remote_Id);
+            intent.putExtra("email", email);
             intent.putExtra("prevAct", "call");
             startActivity(intent);
         }
@@ -247,6 +247,7 @@ public class CallActivity extends AppCompatActivity{
         db.collection(AppConstants.KEY_COLLECTION).document(remote_Id).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     remote_name = documentSnapshot.getString(AppConstants.NAME);
+                    email = documentSnapshot.getString(AppConstants.EMAIL);
                     remoteName.setText(remote_name);
                 })
                 .addOnFailureListener(e -> Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show());

@@ -1,5 +1,6 @@
 package com.example.teamsprototype.activities;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -59,7 +60,12 @@ public class JoinActivity extends AppCompatActivity {
                                 } else {
                                     token = null;
                                     join.setVisibility(View.VISIBLE);
-                                    Toast.makeText(JoinActivity.this.getApplicationContext(), "Room doesn't exist...", Toast.LENGTH_SHORT).show();
+                                    AlertDialog alert = new AlertDialog.Builder(JoinActivity.this)
+                                            .setTitle("Meeting doesn't exist")
+                                            .setMessage("Please wait for the host to start the meeting, or check the meeting code for errors")
+                                            .setPositiveButton("Dismiss", null)
+                                            .setIcon(R.drawable.alert)
+                                            .show();
                                 }
                             } else {
                                 join.setVisibility(View.VISIBLE);

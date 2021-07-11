@@ -1,14 +1,10 @@
 package com.example.teamsprototype.adapters;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,7 +16,6 @@ import com.example.teamsprototype.databinding.ItemReceiveBinding;
 import com.example.teamsprototype.databinding.ItemSendBinding;
 import com.example.teamsprototype.model.Message;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
 
 import org.jetbrains.annotations.NotNull;
 

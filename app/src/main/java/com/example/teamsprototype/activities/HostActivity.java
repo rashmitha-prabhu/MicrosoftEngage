@@ -5,19 +5,16 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -29,11 +26,8 @@ import com.example.teamsprototype.utilities.Preferences;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 
 import static android.content.ContentValues.TAG;
@@ -52,13 +46,16 @@ public class HostActivity extends AppCompatActivity
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ProgressDialog dialog = new ProgressDialog(HostActivity.this);
+        dialog.setCancelable(false);
+        dialog.setMessage("Getting the meeting ready...");
+        dialog.create();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_host);
         room = ChannelNameGenerator.randomString();
 
         preferences = new Preferences(getApplicationContext());
-        ProgressDialog dialog = new ProgressDialog(HostActivity.this);
-        dialog.setMessage("Getting the meeting ready...");
 
         agenda = findViewById(R.id.agenda);
         date = findViewById(R.id.date);
@@ -87,7 +84,7 @@ public class HostActivity extends AppCompatActivity
 
 //        Share meeting details
         share.setOnClickListener(v -> {
-            String msg = "Join the Teams Meeting using code: " + code.getText().toString()
+            String msg = "Join the call using code: " + code.getText().toString()
                     + "\nAgenda: " +  agenda.getText().toString()
                     + "\nDate: " + date.getText().toString()
                     + "\nTime: " + time.getText().toString();
@@ -95,7 +92,7 @@ public class HostActivity extends AppCompatActivity
             send.setAction(Intent.ACTION_SEND);
             send.putExtra(Intent.EXTRA_TEXT, msg);
             send.setType("text/plain");
-            Intent shareIntent = Intent.createChooser(send, "Teams Meeting");
+            Intent shareIntent = Intent.createChooser(send, "Engage");
             startActivity(shareIntent);
         });
 
@@ -115,13 +112,13 @@ public class HostActivity extends AppCompatActivity
                     .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
 
             if(token != null){
-                dialog.dismiss();
                 Intent intent = new Intent(getApplicationContext(), CallActivity.class);
                 intent.putExtra("channelName", room);
                 intent.putExtra("token", token);
                 intent.putExtra("uid", preferences.getString(AppConstants.USER_ID));
                 intent.putExtra("name", preferences.getString(AppConstants.NAME));
                 startActivity(intent);
+                dialog.dismiss();
                 finish();
             } else {
                 dialog.dismiss();
@@ -131,8 +128,6 @@ public class HostActivity extends AppCompatActivity
                         .setPositiveButton("Dismiss", null)
                         .setIcon(R.drawable.alert)
                         .show();
-
-                meet_now.setVisibility(View.VISIBLE);
             }
         });
 

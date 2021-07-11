@@ -1,6 +1,7 @@
 package com.example.teamsprototype.adapters;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -9,14 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.teamsprototype.R;
 import com.example.teamsprototype.activities.CallActivity;
-import com.example.teamsprototype.activities.HostActivity;
 import com.example.teamsprototype.activities.ScheduleActivity;
 import com.example.teamsprototype.model.MeetingModel;
 import com.example.teamsprototype.services.Tokens;
@@ -101,7 +100,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
             share.setOnClickListener(v1 -> {
                 int position = getAbsoluteAdapterPosition();
                 MeetingModel item = meetingList.get(position);
-                String msg = "Join the Teams Meeting using code: " + item.getCode()
+                String msg = "Join the call using code: " + item.getCode()
                         + "\nAgenda: " +  item.getAgenda()
                         + "\nDate: " + item.getDate()
                         + "\nTime: " + item.getTime();
@@ -109,7 +108,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
                 send.setAction(Intent.ACTION_SEND);
                 send.putExtra(Intent.EXTRA_TEXT, msg);
                 send.setType("text/plain");
-                Intent shareIntent = Intent.createChooser(send, "Teams Meeting");
+                Intent shareIntent = Intent.createChooser(send, "Engage");
                 v1.getContext().startActivity(shareIntent);
             });
 
@@ -127,6 +126,13 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
             });
 
             meet.setOnClickListener(v13 -> {
+
+                ProgressDialog dialog = new ProgressDialog(getContext());
+                dialog.setCancelable(false);
+                dialog.setMessage("Getting the meeting ready...");
+                dialog.create();
+                dialog.show();
+
                 int position = getAbsoluteAdapterPosition();
                 MeetingModel item = meetingList.get(position);
                 String code = item.getCode();
@@ -151,7 +157,9 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
                     intent.putExtra("uid", uid);
                     intent.putExtra("name", name);
                     v13.getContext().startActivity(intent);
+                    dialog.dismiss();
                 } else {
+                    dialog.dismiss();
                     AlertDialog alert = new AlertDialog.Builder(getContext())
                             .setTitle("Unable to create meeting")
                             .setMessage("Make sure you are connected to the internet and retry")

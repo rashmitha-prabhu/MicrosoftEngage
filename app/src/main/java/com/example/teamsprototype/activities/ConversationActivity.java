@@ -1,6 +1,7 @@
 package com.example.teamsprototype.activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -8,9 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -45,17 +44,14 @@ public class ConversationActivity extends AppCompatActivity {
 
     MessageAdapter adapter;
     ArrayList<Message> messages;
-    ImageView send;
     EditText msg_box;
     FirebaseDatabase database;
     FirebaseStorage storage;
     RecyclerView chat_view;
-    String senderRoom, receiverRoom;
-    ImageView attachment, start_call, back;
-    String senderUid, receiverUid;
+    String senderRoom, receiverRoom, senderUid, receiverUid;
+    ImageView attachment, start_call, back, send, send_mail;
     ProgressDialog dialog;
     TextView textView, p_name;
-    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,8 +61,6 @@ public class ConversationActivity extends AppCompatActivity {
         dialog = new ProgressDialog(this);
         dialog.setMessage("Uploading Image");
         dialog.setCancelable(false);
-
-        progressBar = findViewById(R.id.progress);
 
         send = findViewById(R.id.send_btn);
         msg_box = findViewById(R.id.message_box);
@@ -155,11 +149,9 @@ public class ConversationActivity extends AppCompatActivity {
 //        Start video call from chat
         start_call =  findViewById(R.id.start_call);
         if(getIntent().getStringExtra("prevAct").equals("call")){
-            start_call.setVisibility(View.INVISIBLE);
+            start_call.setVisibility(View.GONE);
         } else {
             start_call.setOnClickListener(v -> {
-                start_call.setVisibility(View.INVISIBLE);
-                progressBar.setVisibility(View.VISIBLE);
                 String channelName = ChannelNameGenerator.randomString();
                 String token = Tokens.createToken(channelName, 0);
 
@@ -170,15 +162,25 @@ public class ConversationActivity extends AppCompatActivity {
                     intent.putExtra("receiver_uid", receiverUid);
                     intent.putExtra("name", name);
                     start_call.setVisibility(View.VISIBLE);
-                    progressBar.setVisibility(View.INVISIBLE);
                     startActivity(intent);
                 } else {
-                    start_call.setVisibility(View.VISIBLE);
-                    progressBar.setVisibility(View.INVISIBLE);
-                    Toast.makeText(getBaseContext(), "Error in creating room. Retry...", Toast.LENGTH_SHORT).show();
+                    AlertDialog alert = new AlertDialog.Builder(ConversationActivity.this)
+                            .setTitle("Unable to create meeting")
+                            .setMessage("Make sure you are connected to the internet and retry")
+                            .setPositiveButton("Dismiss", null)
+                            .setIcon(R.drawable.alert)
+                            .show();
                 }
             });
         }
+
+//        Send email
+        send_mail = findViewById(R.id.send_mail);
+        send_mail.setOnClickListener(v -> {
+            Intent email = new Intent(Intent.ACTION_SENDTO);
+            email.setData(Uri.parse("mailto:"+getIntent().getStringExtra("email")));
+            startActivity(Intent.createChooser(email, "Send email"));
+        });
     }
 
 //    Stores images sent into the remote storage and renders them on screen

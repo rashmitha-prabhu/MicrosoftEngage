@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -55,20 +56,18 @@ public class LoginActivity extends AppCompatActivity{
         login.setOnClickListener(v -> {
             email = emailTxt.getText().toString();
             password = passwordTxt.getText().toString();
-            if(email.trim().isEmpty()){
-                emailTxt.setError("Field can't be empty");
-            } else if (password.trim().isEmpty()){
-                passwordTxt.setError("Field can't be empty");
-            }
-            else{
-                login.setVisibility(View.GONE);
-                auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
-                    if(task.isSuccessful()){
-                        login();
-                    } else {
-                        login.setVisibility(View.VISIBLE);
-                    }
-                });
+            if(validateEmail(email)){
+                if(validatePassword(password)){
+                    login.setVisibility(View.GONE);
+                    auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
+                        if(task.isSuccessful()){
+                            login();
+                        } else {
+                            login.setVisibility(View.VISIBLE);
+                            Toast.makeText(getApplicationContext(), "Invalid Credentials", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
             }
         });
 
@@ -116,4 +115,27 @@ public class LoginActivity extends AppCompatActivity{
                     }
                 });
     }
+
+    private boolean validateEmail(String email){
+        boolean success = false;
+        if(email.trim().isEmpty()){
+            emailTxt.setError("Field can't be empty");
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+            emailTxt.setError("Enter valid email");
+        } else {
+            success = true;
+        }
+        return success;
+    }
+
+    private boolean validatePassword(String password){
+        boolean success = false;
+        if(password.trim().isEmpty()) {
+            passwordTxt.setError("Field can't be empty");
+        } else {
+            success = true;
+        }
+        return success;
+    }
+
 }

@@ -62,8 +62,6 @@ dependencies {
 
 
 //    Agora
-//    implementation group: 'io.agora.rtc', name: 'full-sdk', version: '3.3.0'
-//    implementation 'com.github.agorabuilder:rtm-sdk:1.4.6'
     implementation 'com.github.agorabuilder:native-full-sdk:3.4.5'
 
 //    okHTTP

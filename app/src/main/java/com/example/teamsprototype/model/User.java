@@ -3,8 +3,8 @@ package com.example.teamsprototype.model;
 public class User {
     private String uid;
     private String name;
+
     private String email;
-    private String password;
 
     public User() {
     }
@@ -13,13 +13,6 @@ public class User {
         this.uid = uid;
         this.name = name;
         this.email = email;
-    }
-
-    public User(String uid, String name, String email, String password) {
-        this.uid = uid;
-        this.name = name;
-        this.email = email;
-        this.password = password;
     }
 
     public String getUid() {
@@ -36,5 +29,13 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

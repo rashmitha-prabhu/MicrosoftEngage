@@ -1,7 +1,5 @@
 package com.example.teamsprototype.model;
 
-import com.google.firebase.database.DataSnapshot;
-
 public class Message {
     private String message, sender_id, imageUrl, messageId;
     private long time;
